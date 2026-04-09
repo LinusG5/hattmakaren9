@@ -15,6 +15,7 @@ public class Hattmakaren2026_9 {
      */
     public static void main(String[] args) {
         // TODO code application logic here
+        System.out.println("TEST");
     }
     
 }
