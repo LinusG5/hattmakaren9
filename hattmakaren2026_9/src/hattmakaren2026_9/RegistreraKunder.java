@@ -16,16 +16,15 @@ import javax.swing.JOptionPane;
  */
 public class RegistreraKunder extends javax.swing.JFrame {
     private InfDB idb;
-    private int KundID;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(RegistreraKunder.class.getName());
 
     /**
      * Creates new form RegistreraKunder
      */
-    public RegistreraKunder(InfDB idb, int KundID) {
+    public RegistreraKunder(InfDB idb) {
         this.idb = idb;
-        this.KundID = KundID;
+  
         initComponents();
     }
 
@@ -64,11 +63,13 @@ public class RegistreraKunder extends javax.swing.JFrame {
         txtAdress.setText("Adress");
 
         btnRegNyKund.setText("Registrera ny kund");
+        btnRegNyKund.addActionListener(this::btnRegNyKundActionPerformed);
 
         btnSpara.setText("Spara");
         btnSpara.addActionListener(this::btnSparaActionPerformed);
 
         btnTaBort.setText("Ta bort");
+        btnTaBort.addActionListener(this::btnTaBortActionPerformed);
 
         jLabel1.setText("Telefonnummer");
 
@@ -151,6 +152,23 @@ public class RegistreraKunder extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSparaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSparaActionPerformed
+    try {
+        String sokID = tftSokFramKund.getText(); // Vi utgår från ID:t vi sökte på
+        
+        String sql = "UPDATE Kunder SET "
+                     + "Namn = '" + txtNamn.getText() + "', "
+                     + "Adress = '" + txtAdress.getText() + "', "
+                     + "Epost = '" + txtMejladress.getText() + "', "
+                     + "Telefon = '" + txtTelefonnummer.getText() + "' "
+                     + "WHERE KundID = " + sokID;
+        
+        idb.update(sql);
+        JOptionPane.showMessageDialog(null, "Kunduppgifter har uppdaterats!");
+        
+    } catch (InfException ex) {
+        JOptionPane.showMessageDialog(null, "Kunde inte uppdatera. Kontrollera att KundID i sökrutan är korrekt.");
+    }
+
         // TODO add your handling code here:
     }//GEN-LAST:event_btnSparaActionPerformed
 
@@ -176,7 +194,7 @@ public class RegistreraKunder extends javax.swing.JFrame {
             txtNamn.setText(kundData.get("Namn"));
             txtTelefonnummer.setText(kundData.get("Telefon"));
             txtMejladress.setText(kundData.get("Epost"));
-            txtAdress.setText(kundData.get("Epost"));
+            txtAdress.setText(kundData.get("Adress"));
         } else {
             JOptionPane.showMessageDialog(null, "Kunden '" + sokVarde + "' hittades inte.");
         }
@@ -187,31 +205,60 @@ public class RegistreraKunder extends javax.swing.JFrame {
     }
     }//GEN-LAST:event_tftSokFramKundActionPerformed
 
+    private void btnRegNyKundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegNyKundActionPerformed
+    try {
+        String namn = txtNamn.getText().trim();
+        String mejladress = txtMejladress.getText().trim();
+        String telefon = txtTelefonnummer.getText().trim();
+        String adress = txtAdress.getText().trim();
+               
+       if (namn.isEmpty() || adress.isEmpty() || mejladress.isEmpty() || telefon.isEmpty()) {
+           JOptionPane.showMessageDialog(null, "Alla fält måste fyllas i!");
+       }
+       
+       String sql = "INSERT INTO Kunder (Namn, Adress, Telefon, Epost) VALUES ('" 
+        + namn + "', '" 
+        + adress + "', '" 
+        + telefon + "', '" 
+        + mejladress + "')";
+       
+       
+       idb.insert(sql);
+       JOptionPane.showMessageDialog(null, "Ny kund har registrerats!");
+       
+       txtNamn.setText(""); txtAdress.setText(""); txtMejladress.setText(""); txtTelefonnummer.setText("");
+       
+    } catch (InfException ex) {
+        JOptionPane.showMessageDialog(null, "Gick inte att spara i databasen. Kontrollera uppgifterna.");
+    }
+    }//GEN-LAST:event_btnRegNyKundActionPerformed
+
+    private void btnTaBortActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaBortActionPerformed
+ // Fråga först om de är säkra
+    int svar = JOptionPane.showConfirmDialog(null, "Är du helt säker på att du vill ta bort kunden?", "Ta bort kund", JOptionPane.YES_NO_OPTION);
+    
+    if (svar == JOptionPane.YES_OPTION) {
+        try {
+            String sokID = tftSokFramKund.getText();
+            String sql = "DELETE FROM Kunder WHERE KundID = " + sokID;
+            
+            idb.delete(sql);
+            JOptionPane.showMessageDialog(null, "Kunden har raderats.");
+            
+            // Rensa fälten efter radering
+            txtNamn.setText(""); txtAdress.setText(""); txtMejladress.setText(""); txtTelefonnummer.setText(""); tftSokFramKund.setText("");
+            
+        } catch (InfException ex) {
+            JOptionPane.showMessageDialog(null, "Kunde inte ta bort kunden. Den kan vara kopplad till en order.");
+        }
+    }
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnTaBortActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        //java.awt.EventQueue.invokeLater(() -> new RegistreraKunder().setVisible(true));
-    }
-
+   
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnRegNyKund;
     private javax.swing.JButton btnSpara;
