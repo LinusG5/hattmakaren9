@@ -7,6 +7,9 @@ package hattmakaren2026_9;
 import java.sql.Connection; 
 import java.sql.DriverManager; 
 import java.sql.SQLException;
+import oru.inf.InfException;
+import oru.inf.InfDB;
+
 
 /**
  *
@@ -17,23 +20,23 @@ public class Hattmakaren2026_9 {
     /**
      * @param args the command line arguments
      */
+    
+    private static InfDB idb;
+    
     public static void main(String[] args) {
         // TODO code application logic here
-        System.out.println("TEST");
-        System.out.println("TEST2");
-        
-        // Här skriver vi koden som ansluter till MySQL
-        String url = "jdbc:mysql://localhost:3306/hattmakaren";
-        String anvandare = "hattAdmin26";
-        String lösenord = "hattAdmin26PW";
+     
  
         try {
-            // Här försöker vi öppna dörren till databasen
-            Connection minKoppling = DriverManager.getConnection(url, anvandare, lösenord);
-            System.out.println("Snyggt! Anslutningen till hattmakaren lyckades.");
-        } catch (SQLException e) {
+            idb = new InfDB("hattmakaren", "3306", "hattAdmin26", "hattAdmin26PW");
+            System.out.println("Anslutningen lyckades!");
+
+            // HÄR ÖPPNAR DU HUVUDMENYN:
+            // Vi skapar ett objekt av din fönster-klass och gör det synligt 
+            new HuvudMeny(idb).setVisible(true);
+        } catch (InfException ex) {
             // Om något går fel skrivs felet ut här
-            System.out.println("Hoppsan, något gick fel: " + e.getMessage());
+            System.out.println("Ett fel uppstod vid uppstart: " + ex.getMessage());
         }
     }
 }
