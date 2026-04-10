@@ -29,14 +29,15 @@ public class OrderMeny extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        btnSkapaKundorder = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Order Meny");
 
-        jButton1.setText("Skapa Order");
+        btnSkapaKundorder.setText("Skapa kundorder");
+        btnSkapaKundorder.addActionListener(this::btnSkapaKundorderActionPerformed);
 
         jButton2.setText("Orderhistorik");
         jButton2.addActionListener(this::jButton2ActionPerformed);
@@ -53,7 +54,7 @@ public class OrderMeny extends javax.swing.JFrame {
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(btnSkapaKundorder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -62,10 +63,10 @@ public class OrderMeny extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43)
-                .addComponent(jButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                .addComponent(btnSkapaKundorder)
+                .addGap(50, 50, 50)
                 .addComponent(jButton2)
-                .addGap(28, 28, 28))
+                .addContainerGap(116, Short.MAX_VALUE))
         );
 
         pack();
@@ -74,6 +75,10 @@ public class OrderMeny extends javax.swing.JFrame {
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void btnSkapaKundorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkapaKundorderActionPerformed
+       new SkapaKundorder().setVisible(true);
+    }//GEN-LAST:event_btnSkapaKundorderActionPerformed
 
     /**
      * @param args the command line arguments
@@ -101,8 +106,9 @@ public class OrderMeny extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btnSkapaKundorder;
     private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
+
