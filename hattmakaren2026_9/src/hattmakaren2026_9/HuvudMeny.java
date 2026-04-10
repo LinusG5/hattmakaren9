@@ -92,8 +92,12 @@ public class HuvudMeny extends javax.swing.JFrame {
 
     private void btnOrderMenyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderMenyActionPerformed
         // TODO add your handling code here:
-       
-        new OrderMeny().setVisible(true);  
+        try {
+            new OrderMeny(idb).setVisible(true);
+        } catch (InfException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+          
         
     }//GEN-LAST:event_btnOrderMenyActionPerformed
 
