@@ -30,8 +30,11 @@
                       <Component id="lblValkommenText" min="-2" pref="178" max="-2" attributes="0"/>
                   </Group>
                   <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="186" max="-2" attributes="0"/>
-                      <Component id="btnMaterial" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="163" max="-2" attributes="0"/>
+                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                          <Component id="btnOrderMeny" max="32767" attributes="0"/>
+                          <Component id="btnMaterial" max="32767" attributes="0"/>
+                      </Group>
                   </Group>
               </Group>
               <EmptySpace pref="283" max="32767" attributes="0"/>
@@ -45,7 +48,9 @@
               <Component id="lblValkommenText" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
               <Component id="btnMaterial" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="379" max="32767" attributes="0"/>
+              <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
+              <Component id="btnOrderMeny" min="-2" max="-2" attributes="0"/>
+              <EmptySpace pref="294" max="32767" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -62,6 +67,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnMaterialActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnOrderMeny">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Order meny"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnOrderMenyActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
