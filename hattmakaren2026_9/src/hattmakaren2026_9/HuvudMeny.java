@@ -73,7 +73,11 @@ public class HuvudMeny extends javax.swing.JFrame {
     private void btnMaterialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterialActionPerformed
         // TODO add your handling code here:
         
-        new MaterialSidan(idb).setVisible(true);
+        try {
+            new MaterialSidan(idb).setVisible(true);
+        } catch (InfException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
          
         
     }//GEN-LAST:event_btnMaterialActionPerformed
