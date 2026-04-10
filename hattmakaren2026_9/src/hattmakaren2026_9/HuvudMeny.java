@@ -34,57 +34,78 @@ public class HuvudMeny extends javax.swing.JFrame {
     private void initComponents() {
 
         lblValkommenText = new javax.swing.JLabel();
+        btnMaterial = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         lblValkommenText.setText("Välkommen till huvudmenyn!");
+
+        btnMaterial.setText("Material");
+        btnMaterial.addActionListener(this::btnMaterialActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(278, 278, 278)
-                .addComponent(lblValkommenText, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(295, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(278, 278, 278)
+                        .addComponent(lblValkommenText, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(186, 186, 186)
+                        .addComponent(btnMaterial)))
+                .addContainerGap(283, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(22, 22, 22)
                 .addComponent(lblValkommenText)
-                .addContainerGap(462, Short.MAX_VALUE))
+                .addGap(60, 60, 60)
+                .addComponent(btnMaterial)
+                .addContainerGap(379, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnMaterialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterialActionPerformed
+        // TODO add your handling code here:
+        
+        new MaterialSidan(idb).setVisible(true);
+         
+        
+    }//GEN-LAST:event_btnMaterialActionPerformed
+
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    //public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
+        //try {
+            //for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+                //if ("Nimbus".equals(info.getName())) {
+                   // javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                  //  break;
+                //}
+            //}
+       // } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+            //logger.log(java.util.logging.Level.SEVERE, null, ex);
+       // }
         //</editor-fold>
 
         /* Create and display the form */
         // java.awt.EventQueue.invokeLater(() -> new HuvudMeny().setVisible(true));
-    }
+    {
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnMaterial;
     private javax.swing.JLabel lblValkommenText;
     // End of variables declaration//GEN-END:variables
 }
