@@ -97,7 +97,7 @@ public class HuvudMeny extends javax.swing.JFrame {
         // TODO add your handling code here:
         
         try {
-            new MaterialSidan(idb).setVisible(true);
+            new MaterialBestallningsSidan(idb).setVisible(true);
         } catch (InfException e) {
             System.out.println("Error: " + e.getMessage());
         }
