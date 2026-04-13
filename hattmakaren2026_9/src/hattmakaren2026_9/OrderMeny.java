@@ -35,6 +35,9 @@ public class OrderMeny extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btnSkapaKundorder = new javax.swing.JButton();
         btnOrderHistorik = new javax.swing.JButton();
+        btnSkapaFraktsedel = new javax.swing.JButton();
+        btnOrderStatus = new javax.swing.JButton();
+        btnAktuellaOrdrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -45,6 +48,15 @@ public class OrderMeny extends javax.swing.JFrame {
 
         btnOrderHistorik.setText("Orderhistorik");
         btnOrderHistorik.addActionListener(this::btnOrderHistorikActionPerformed);
+
+        btnSkapaFraktsedel.setText("Skapa fraktsedel");
+        btnSkapaFraktsedel.addActionListener(this::btnSkapaFraktsedelActionPerformed);
+
+        btnOrderStatus.setText("Orderstatus");
+        btnOrderStatus.addActionListener(this::btnOrderStatusActionPerformed);
+
+        btnAktuellaOrdrar.setText("Aktuella ordrar");
+        btnAktuellaOrdrar.addActionListener(this::btnAktuellaOrdrarActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -59,6 +71,12 @@ public class OrderMeny extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnOrderHistorik, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSkapaKundorder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(44, 44, 44)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnAktuellaOrdrar)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(btnSkapaFraktsedel, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
+                        .addComponent(btnOrderStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -67,10 +85,16 @@ public class OrderMeny extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(43, 43, 43)
-                .addComponent(btnSkapaKundorder)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnSkapaKundorder)
+                    .addComponent(btnSkapaFraktsedel))
                 .addGap(50, 50, 50)
-                .addComponent(btnOrderHistorik)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnOrderHistorik)
+                    .addComponent(btnOrderStatus))
+                .addGap(34, 34, 34)
+                .addComponent(btnAktuellaOrdrar)
+                .addContainerGap(59, Short.MAX_VALUE))
         );
 
         pack();
@@ -88,6 +112,85 @@ public class OrderMeny extends javax.swing.JFrame {
        new SkapaKundorder().setVisible(true);
     }//GEN-LAST:event_btnSkapaKundorderActionPerformed
 
+    private void btnSkapaFraktsedelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkapaFraktsedelActionPerformed
+String idStr = javax.swing.JOptionPane.showInputDialog("Ange Order-ID:");
+    if (idStr != null && !idStr.isEmpty()) {
+        try {
+            String sql = "SELECT Kunder.Namn, Kunder.Adress, Hattmodeller.PrisExklMoms " +
+                         "FROM Ordrar " +
+                         "JOIN Kunder ON Ordrar.KundID = Kunder.KundID " +
+                         "JOIN Orderrader ON Ordrar.OrderID = Orderrader.OrderID " +
+                         "JOIN Hattmodeller ON Orderrader.ModellID = Hattmodeller.ModellID " +
+                         "WHERE Ordrar.OrderID = " + idStr;
+
+            java.util.HashMap<String, String> data = idb.fetchRow(sql);
+
+            if (data != null) {
+                // Anropa motorn vi skapade i Steg 2
+                skapaFraktsedelFil(Integer.parseInt(idStr), data.get("Namn"), data.get("Adress"), data.get("PrisExklMoms"));
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this, "Kunde inte hitta ordern i databasen.");
+            }
+        } catch (InfException e) {
+            System.out.println("Fel vid hämtning: " + e.getMessage());
+        }
+    }
+    }//GEN-LAST:event_btnSkapaFraktsedelActionPerformed
+
+    private void btnOrderStatusActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderStatusActionPerformed
+        try {
+            new OrderStatus(idb).setVisible(true);
+        } catch (InfException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnOrderStatusActionPerformed
+
+    private void btnAktuellaOrdrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAktuellaOrdrarActionPerformed
+
+    new AktuellaOrdrar(idb).setVisible(true);
+    
+    }//GEN-LAST:event_btnAktuellaOrdrarActionPerformed
+private void skapaFraktsedelFil(int orderID, String namn, String adress, String prisExkl) {
+    String filnamn = "Fraktsedel_Order_" + orderID + ".txt";
+    // Skapar ett objekt för att slumpa tal
+java.util.Random rand = new java.util.Random();
+
+// Genererar ett tal mellan 10 000 000 och 99 999 999
+int slumpNummer = 10000000 + rand.nextInt(90000000); 
+
+// Gör om talet till en textsträng (String) för fraktsedeln
+String exportKod = String.valueOf(slumpNummer);
+    
+    
+    try (java.io.PrintWriter writer = new java.io.PrintWriter(filnamn, "UTF-8")) {
+        double pris = Double.parseDouble(prisExkl);
+        double moms = pris * 0.25;
+        double totalt = pris + moms;
+
+       boolean arExport = !(adress.toLowerCase().contains("sverige") || adress.toLowerCase().contains("sweden"));
+       if (arExport) {
+            writer.println("======= FRAKTSEDEL (EXPORT) =======");
+        } else {
+            writer.println("======= FRAKTSEDEL (INRIKES) =======");
+        }
+        writer.println("Ordernummer: " + orderID);
+        writer.println("Mottagare:   " + namn);
+        writer.println("Adress:      " + adress);
+        writer.println("-----------------------------------");
+        if (arExport) {
+            writer.println("Exportkod:   " + exportKod);
+        }
+        writer.println("Vikt:        0.8 kg");    
+        writer.println("Moms (25%):  " + moms + " kr");
+        writer.println("Totalpris:   " + totalt + " kr");
+        writer.println("===================================");
+        
+        javax.swing.JOptionPane.showMessageDialog(this, "Success! Filen skapad: " + filnamn);
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Fel: " + e.getMessage());
+    }
+}
+   
     /**
      * @param args the command line arguments
      */
@@ -114,7 +217,10 @@ public class OrderMeny extends javax.swing.JFrame {
     //}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAktuellaOrdrar;
     private javax.swing.JButton btnOrderHistorik;
+    private javax.swing.JButton btnOrderStatus;
+    private javax.swing.JButton btnSkapaFraktsedel;
     private javax.swing.JButton btnSkapaKundorder;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables

@@ -3,19 +3,21 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package hattmakaren2026_9;
+
 import oru.inf.InfException;
 import oru.inf.InfDB;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  *
  * @author Linus
  */
 public class OrderHistorik extends javax.swing.JFrame {
-    
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(OrderHistorik.class.getName());
     private InfDB idb;
-        
+
     /**
      * Creates new form OrderHistorik
      */
@@ -24,11 +26,11 @@ public class OrderHistorik extends javax.swing.JFrame {
         this.idb = idb;
         fyllRullListaMedKunder();
     }
-    
+
     private void fyllRullListaMedKunder() {
         try {
             ArrayList<String> namnLista = idb.fetchColumn("select namn from kunder");
-            
+
             if (namnLista != null) {
                 for (String namn : namnLista) {
                     cmbKunder.addItem(namn);
@@ -38,7 +40,7 @@ public class OrderHistorik extends javax.swing.JFrame {
             System.out.println("Error: " + e.getMessage());
         }
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -59,8 +61,10 @@ public class OrderHistorik extends javax.swing.JFrame {
         lblOrderHistorikRubrik.setText("Orderhistorik");
 
         cmbKunder.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        cmbKunder.addActionListener(this::cmbKunderActionPerformed);
 
         btnVisaHistorik.setText("Visa historik");
+        btnVisaHistorik.addActionListener(this::btnVisaHistorikActionPerformed);
 
         txtHistorikText.setColumns(20);
         txtHistorikText.setRows(5);
@@ -101,11 +105,59 @@ public class OrderHistorik extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void cmbKunderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cmbKunderActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_cmbKunderActionPerformed
+
+    private void btnVisaHistorikActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVisaHistorikActionPerformed
+        // TODO add your handling code here:
+        txtHistorikText.setText("");
+
+        String valtNamn = (String) cmbKunder.getSelectedItem();
+        if (valtNamn == null || valtNamn.isEmpty()) {
+            return;
+        }
+        try {
+            String fraga = "SELECT Ordrar.OrderDatum, Ordrar.Status, Ordrar.TotalPrisInclMoms "
+                    + "FROM Ordrar "
+                    + "JOIN Kunder ON Kunder.KundID = Ordrar.KundID "
+                    + "WHERE Kunder.Namn = '" + valtNamn + "'";
+
+            ArrayList<HashMap<String, String>> rader = idb.fetchRows(fraga);
+
+            if (rader != null && !rader.isEmpty()) {
+                txtHistorikText.append("Orderhistorik för: " + valtNamn + "\n");
+                txtHistorikText.append("-------------------------------\n");
+
+                for (HashMap<String, String> rad : rader) {
+                    String datum = rad.get("OrderDatum");
+                    String status = rad.get("Status");
+                    String pris = rad.get("TotalPrisInclMoms");
+
+                    if (pris == null) {
+                        pris = "0.00";
+                    }
+
+                    txtHistorikText.append("Datum: " + datum + "\n");
+                    txtHistorikText.append("Status: " + status + "\n");
+                    txtHistorikText.append("Pris: " + pris + "kr inkl.moms\n");
+                    txtHistorikText.append("---------------------------\n");
+
+                }
+            } else {
+                txtHistorikText.setText("Kunden " + valtNamn + "har inga registrerade ordrar.");
+               } 
+        } catch(InfException e){
+                   System.out.println("Databasfel: " + e.getMessage());
+                   javax.swing.JOptionPane.showMessageDialog(this, "Kunde inte hämta historik.");
+                   }
+        
+
+    }//GEN-LAST:event_btnVisaHistorikActionPerformed
+
     /**
      * @param args the command line arguments
      */
- 
-   
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnVisaHistorik;
