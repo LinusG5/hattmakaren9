@@ -35,7 +35,10 @@
                   <Component id="btnSkapaKundorder" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="44" max="-2" attributes="0"/>
-              <Component id="btnSkapaFraktsedel" min="-2" pref="134" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="btnSkapaFraktsedel" pref="134" max="32767" attributes="0"/>
+                  <Component id="btnOrderStatus" max="32767" attributes="0"/>
+              </Group>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -51,7 +54,10 @@
                   <Component id="btnSkapaFraktsedel" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
-              <Component id="btnOrderHistorik" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnOrderHistorik" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnOrderStatus" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace pref="116" max="32767" attributes="0"/>
           </Group>
       </Group>
@@ -85,6 +91,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnSkapaFraktsedelActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnOrderStatus">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Orderstatus"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnOrderStatusActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
