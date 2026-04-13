@@ -83,28 +83,26 @@ public class Kundsida extends javax.swing.JFrame {
 
         try {
             // Använd LIKE direkt i SQL-strängen (InfDB gillar detta bättre)
-            String sql = "SELECT KundID, namn, epost, Telefon, Adress " +
-                         "FROM Users WHERE namn LIKE '%" + sokText.trim() + "%'";
+            String sql = "SELECT KundID, Namn, Epost, Telefon, Adress " +
+                         "FROM Kunder " +
+                         "WHERE KundID LIKE '%" + sokText.trim() + "%' " +
+                         "OR Namn LIKE '%" + sokText.trim() + "%' " +
+                         "OR Epost LIKE '%" + sokText.trim() + "%' " +
+                         "OR Telefon LIKE '%" + sokText.trim() + "%' " +
+                         "OR Adress LIKE '%" + sokText.trim() + "%'";
 
             // Här skickar vi INGEN extra parameter
             ArrayList<HashMap<String, String>> resultat = db.fetchRows(sql);
 
-            if (resultat == null || resultat.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                    "Inga kunder hittades som matchar: " + sokText,
-                    "Inga resultat", 
-                    JOptionPane.INFORMATION_MESSAGE);
-                return;
-        }
 
             // Fyll tabellen med resultaten
             for (HashMap<String, String> rad : resultat) {
                 Object[] row = {
-                    rad.get("KUNDID"),
-                    rad.get("NAMN"),
-                    rad.get("EPOST"),
-                    rad.get("TELEFON"),
-                    rad.get("ADRESS")
+                    rad.get("KundID"),
+                    rad.get("Namn"),
+                    rad.get("Epost"),
+                    rad.get("Telefon"),
+                    rad.get("Adress")
                 };
                 ((DefaultTableModel) TBLkund.getModel()).addRow(row);
             }
@@ -166,7 +164,6 @@ public class Kundsida extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(TBLkund);
 
-        TXTsokfunktion.setText("Sök...");
         TXTsokfunktion.addActionListener(this::TXTsokfunktionActionPerformed);
         TXTsokfunktion.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -218,7 +215,9 @@ public class Kundsida extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BTNmenyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNmenyActionPerformed
-        // TODO add your handling code here:
+    HuvudMeny hm = new HuvudMeny(db);
+    hm.setVisible(true);
+    this.dispose(); // stänger Kundsida
     }//GEN-LAST:event_BTNmenyActionPerformed
 
     private void TXTsokfunktionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TXTsokfunktionActionPerformed
@@ -230,7 +229,8 @@ public class Kundsida extends javax.swing.JFrame {
     }//GEN-LAST:event_CBOXsorteraActionPerformed
 
     private void TXTsokfunktionKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXTsokfunktionKeyPressed
-        
+    String sokText = TXTsokfunktion.getText();
+    sokKunder(sokText);
     }//GEN-LAST:event_TXTsokfunktionKeyPressed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
