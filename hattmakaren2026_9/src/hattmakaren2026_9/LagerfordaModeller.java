@@ -71,6 +71,7 @@ public class LagerfordaModeller extends javax.swing.JFrame {
         btnOkaLager = new javax.swing.JButton();
         lblModellID = new javax.swing.JLabel();
         lblAntal = new javax.swing.JLabel();
+        btnTillbaka = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -99,6 +100,9 @@ public class LagerfordaModeller extends javax.swing.JFrame {
 
         lblAntal.setText("Antal");
 
+        btnTillbaka.setText("Tillbaka");
+        btnTillbaka.addActionListener(this::btnTillbakaActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -119,6 +123,9 @@ public class LagerfordaModeller extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(btnOkaLager)))))
                 .addGap(31, 31, 31))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(btnTillbaka)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,7 +141,8 @@ public class LagerfordaModeller extends javax.swing.JFrame {
                     .addComponent(btnOkaLager))
                 .addGap(46, 46, 46)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
+                .addGap(2, 2, 2)
+                .addComponent(btnTillbaka))
         );
 
         pack();
@@ -182,6 +190,10 @@ public class LagerfordaModeller extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tftModellIDActionPerformed
 
+    private void btnTillbakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTillbakaActionPerformed
+    this.dispose();        // TODO add your handling code here:
+    }//GEN-LAST:event_btnTillbakaActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -209,6 +221,7 @@ public class LagerfordaModeller extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnOkaLager;
+    private javax.swing.JButton btnTillbaka;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jtHattmodeller;
     private javax.swing.JLabel lblAntal;
