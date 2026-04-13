@@ -37,7 +37,7 @@ public class HuvudMeny extends javax.swing.JFrame {
         btnMaterial = new javax.swing.JButton();
         btnOrderMeny = new javax.swing.JButton();
         btnLagerfordaModeller = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        BTNkundSida = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -52,8 +52,8 @@ public class HuvudMeny extends javax.swing.JFrame {
         btnLagerfordaModeller.setText("Lagerförda modeller");
         btnLagerfordaModeller.addActionListener(this::btnLagerfordaModellerActionPerformed);
 
-        jButton1.setText("Kundsida");
-        jButton1.addActionListener(this::jButton1ActionPerformed);
+        BTNkundSida.setText("Kundsida");
+        BTNkundSida.addActionListener(this::BTNkundSidaActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -71,7 +71,7 @@ public class HuvudMeny extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnLagerfordaModeller, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(BTNkundSida, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(183, 183, 183))
         );
         layout.setVerticalGroup(
@@ -86,7 +86,7 @@ public class HuvudMeny extends javax.swing.JFrame {
                 .addGap(62, 62, 62)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnOrderMeny)
-                    .addComponent(jButton1))
+                    .addComponent(BTNkundSida))
                 .addContainerGap(294, Short.MAX_VALUE))
         );
 
@@ -121,14 +121,10 @@ public class HuvudMeny extends javax.swing.JFrame {
     lagerFonster.setVisible(true);// TODO add your handling code here:
     }//GEN-LAST:event_btnLagerfordaModellerActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-                // TODO add your handling code here:
-        try {
-            new Kundsida(idb).setVisible(true);
-        } catch (InfException e) {
-            System.out.println("Error: " + e.getMessage());
-        }
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void BTNkundSidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNkundSidaActionPerformed
+    Kundsida ks = new Kundsida(idb);
+    ks.setVisible(true);
+    }//GEN-LAST:event_BTNkundSidaActionPerformed
 
     
     /**
@@ -158,10 +154,10 @@ public class HuvudMeny extends javax.swing.JFrame {
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BTNkundSida;
     private javax.swing.JButton btnLagerfordaModeller;
     private javax.swing.JButton btnMaterial;
     private javax.swing.JButton btnOrderMeny;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel lblValkommenText;
     // End of variables declaration//GEN-END:variables
 }
