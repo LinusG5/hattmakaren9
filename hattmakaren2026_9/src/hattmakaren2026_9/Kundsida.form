@@ -8,6 +8,9 @@
     <SyntheticProperty name="formSizePolicy" type="int" value="1"/>
     <SyntheticProperty name="generateCenter" type="boolean" value="false"/>
   </SyntheticProperties>
+  <Events>
+    <EventHandler event="windowOpened" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowOpened"/>
+  </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
     <AuxValue name="FormSettings_autoSetComponentName" type="java.lang.Boolean" value="false"/>
@@ -127,9 +130,6 @@
       </SubComponents>
     </Container>
     <Component class="javax.swing.JTextField" name="TXTsokfunktion">
-      <Properties>
-        <Property name="text" type="java.lang.String" value="S&#xf6;k..."/>
-      </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TXTsokfunktionActionPerformed"/>
         <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="TXTsokfunktionKeyPressed"/>
@@ -139,6 +139,9 @@
       <Properties>
         <Property name="text" type="java.lang.String" value="Hantera"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="TXThanteraActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JComboBox" name="CBOXsortera">
       <Properties>
