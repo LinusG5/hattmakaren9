@@ -100,7 +100,6 @@ public class OrderMeny extends javax.swing.JFrame {
 String idStr = javax.swing.JOptionPane.showInputDialog("Ange Order-ID:");
     if (idStr != null && !idStr.isEmpty()) {
         try {
-            // SQL-fråga som matchar ditt schema i PDF:en
             String sql = "SELECT Kunder.Namn, Kunder.Adress, Hattmodeller.PrisExklMoms " +
                          "FROM Ordrar " +
                          "JOIN Kunder ON Ordrar.KundID = Kunder.KundID " +
@@ -123,19 +122,35 @@ String idStr = javax.swing.JOptionPane.showInputDialog("Ange Order-ID:");
     }//GEN-LAST:event_btnSkapaFraktsedelActionPerformed
 private void skapaFraktsedelFil(int orderID, String namn, String adress, String prisExkl) {
     String filnamn = "Fraktsedel_Order_" + orderID + ".txt";
+    // Skapar ett objekt för att slumpa tal
+java.util.Random rand = new java.util.Random();
+
+// Genererar ett tal mellan 10 000 000 och 99 999 999
+int slumpNummer = 10000000 + rand.nextInt(90000000); 
+
+// Gör om talet till en textsträng (String) för fraktsedeln
+String exportKod = String.valueOf(slumpNummer);
+    
     
     try (java.io.PrintWriter writer = new java.io.PrintWriter(filnamn, "UTF-8")) {
         double pris = Double.parseDouble(prisExkl);
         double moms = pris * 0.25;
         double totalt = pris + moms;
 
-        writer.println("======= FRAKTSEDEL (EXPORT) =======");
+       boolean arExport = !(adress.toLowerCase().contains("sverige") || adress.toLowerCase().contains("sweden"));
+       if (arExport) {
+            writer.println("======= FRAKTSEDEL (EXPORT) =======");
+        } else {
+            writer.println("======= FRAKTSEDEL (INRIKES) =======");
+        }
         writer.println("Ordernummer: " + orderID);
         writer.println("Mottagare:   " + namn);
         writer.println("Adress:      " + adress);
         writer.println("-----------------------------------");
-        writer.println("Exportkod:   12345678"); // Krav från Backlog #8
-        writer.println("Vikt:        0.8 kg");     // Krav från Backlog #8
+        if (arExport) {
+            writer.println("Exportkod:   " + exportKod);
+        }
+        writer.println("Vikt:        0.8 kg");    
         writer.println("Moms (25%):  " + moms + " kr");
         writer.println("Totalpris:   " + totalt + " kr");
         writer.println("===================================");
