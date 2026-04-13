@@ -19,60 +19,55 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class Kundsida extends javax.swing.JFrame {
-    private InfDB db;
+    private InfDB idb;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Kundsida.class.getName());
     /**
      * Creates new form Kundsida
      */
-    public Kundsida() {
+    public Kundsida(InfDB idb) {
         initComponents();
-        try {
-        String dbPath = "C:\\db\\HOGDB.FDB";   // ÄNDRA till din sökväg
-        db = new InfDB(dbPath);
-    } catch (InfException e) {
-        JOptionPane.showMessageDialog(this, "Kunde inte ansluta till databasen!");
-    }
-    }
+        this.idb = idb;
+        visaAllaKunder(); 
+}
     
     public void visaAllaKunder() {
         
-// Rensa tabellen först
-    ((DefaultTableModel) TBLkund.getModel()).setRowCount(0);
+        ((DefaultTableModel) TBLkund.getModel()).setRowCount(0);
 
-    try {
-        String sql = "SELECT KundID, namn, epost, Telefon, Adress FROM Users";
+        try {
+            String sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder";
         
-        ArrayList<HashMap<String, String>> resultat = db.fetchRows(sql);
+            ArrayList<HashMap<String, String>> resultat = idb.fetchRows(sql);
 
-        // Kolla om det kom tillbaka några resultat
-        if (resultat == null || resultat.isEmpty()) {
+            // Kolla om det kom tillbaka några resultat
+            if (resultat == null || resultat.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                    "Det finns inga kunder i databasen",
+                    "Inga kunder", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+
+            // Lägg till raderna i tabellen
+            for (HashMap<String, String> rad : resultat) {
+                Object[] row = {
+                    rad.get("KundID"),
+                    rad.get("Namn"),
+                    rad.get("Epost"),
+                    rad.get("Telefon"),
+                    rad.get("Adress")
+                };
+                ((DefaultTableModel) TBLkund.getModel()).addRow(row);
+            }
+
+        } catch (InfException e) {
             JOptionPane.showMessageDialog(this,
-                "Det finns inga kunder i databasen",
-                "Inga kunder", 
-                JOptionPane.INFORMATION_MESSAGE);
-            return;
+                "Fel vid hämtning av kunder:\n" + e.getMessage(),
+                "Databasfel", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
-
-        // Lägg till raderna i tabellen
-        for (HashMap<String, String> rad : resultat) {
-            Object[] row = {
-                rad.get("KUNDID"),
-                rad.get("NAMN"),
-                rad.get("EPOST"),
-                rad.get("TELEFON"),
-                rad.get("ADRESS")
-            };
-            ((DefaultTableModel) TBLkund.getModel()).addRow(row);
-        }
-
-    } catch (InfException e) {
-        JOptionPane.showMessageDialog(this,
-            "Fel vid hämtning av kunder:\n" + e.getMessage(),
-            "Databasfel", 
-            JOptionPane.ERROR_MESSAGE);
-        e.printStackTrace();
-    }
 }
     
     public void sokKunder(String sokText) {
@@ -88,28 +83,26 @@ public class Kundsida extends javax.swing.JFrame {
 
         try {
             // Använd LIKE direkt i SQL-strängen (InfDB gillar detta bättre)
-            String sql = "SELECT KundID, namn, epost, Telefon, Adress " +
-                         "FROM Users WHERE namn LIKE '%" + sokText.trim() + "%'";
+            String sql = "SELECT KundID, Namn, Epost, Telefon, Adress " +
+                         "FROM Kunder " +
+                         "WHERE KundID LIKE '%" + sokText.trim() + "%' " +
+                         "OR Namn LIKE '%" + sokText.trim() + "%' " +
+                         "OR Epost LIKE '%" + sokText.trim() + "%' " +
+                         "OR Telefon LIKE '%" + sokText.trim() + "%' " +
+                         "OR Adress LIKE '%" + sokText.trim() + "%'";
 
             // Här skickar vi INGEN extra parameter
-            ArrayList<HashMap<String, String>> resultat = db.fetchRows(sql);
+            ArrayList<HashMap<String, String>> resultat = idb.fetchRows(sql);
 
-            if (resultat == null || resultat.isEmpty()) {
-                JOptionPane.showMessageDialog(this,
-                    "Inga kunder hittades som matchar: " + sokText,
-                    "Inga resultat", 
-                    JOptionPane.INFORMATION_MESSAGE);
-                return;
-        }
 
             // Fyll tabellen med resultaten
             for (HashMap<String, String> rad : resultat) {
                 Object[] row = {
-                    rad.get("KUNDID"),
-                    rad.get("NAMN"),
-                    rad.get("EPOST"),
-                    rad.get("TELEFON"),
-                    rad.get("ADRESS")
+                    rad.get("KundID"),
+                    rad.get("Namn"),
+                    rad.get("Epost"),
+                    rad.get("Telefon"),
+                    rad.get("Adress")
                 };
                 ((DefaultTableModel) TBLkund.getModel()).addRow(row);
             }
@@ -122,6 +115,28 @@ public class Kundsida extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    
+    private void hamtaOchVisa(String sql) {
+    try {
+        ArrayList<HashMap<String, String>> resultat = idb.fetchRows(sql);
+
+        DefaultTableModel model = (DefaultTableModel) TBLkund.getModel();
+        model.setRowCount(0);
+
+        for (HashMap<String, String> rad : resultat) {
+            model.addRow(new Object[]{
+                rad.get("KundID"),
+                rad.get("Namn"),
+                rad.get("Epost"),
+                rad.get("Telefon"),
+                rad.get("Adress")
+            });
+        }
+
+    } catch (InfException e) {
+        e.printStackTrace();
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -140,6 +155,11 @@ public class Kundsida extends javax.swing.JFrame {
         CBOXsortera = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         BTNmeny.setText("Meny");
         BTNmeny.addActionListener(this::BTNmenyActionPerformed);
@@ -166,7 +186,6 @@ public class Kundsida extends javax.swing.JFrame {
         });
         jScrollPane1.setViewportView(TBLkund);
 
-        TXTsokfunktion.setText("Sök...");
         TXTsokfunktion.addActionListener(this::TXTsokfunktionActionPerformed);
         TXTsokfunktion.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -175,8 +194,9 @@ public class Kundsida extends javax.swing.JFrame {
         });
 
         TXThantera.setText("Hantera");
+        TXThantera.addActionListener(this::TXThanteraActionPerformed);
 
-        CBOXsortera.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sortera...", "Stigande", "Fallande", "Alfabetiskt" }));
+        CBOXsortera.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Namn A-Ö", "Namn Ö-A", "KundID stigande", "KundID fallande" }));
         CBOXsortera.addActionListener(this::CBOXsorteraActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -218,7 +238,9 @@ public class Kundsida extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BTNmenyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNmenyActionPerformed
-        // TODO add your handling code here:
+    HuvudMeny hm = new HuvudMeny(idb);
+    hm.setVisible(true);
+    this.dispose(); // stänger Kundsida
     }//GEN-LAST:event_BTNmenyActionPerformed
 
     private void TXTsokfunktionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TXTsokfunktionActionPerformed
@@ -226,12 +248,46 @@ public class Kundsida extends javax.swing.JFrame {
     }//GEN-LAST:event_TXTsokfunktionActionPerformed
 
     private void CBOXsorteraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CBOXsorteraActionPerformed
-        // TODO add your handling code here:
+        String val = CBOXsortera.getSelectedItem().toString();
+
+    String sql = "";
+
+    switch (val) {
+        case "Namn A-Ö":
+            sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder ORDER BY Namn ASC";
+            break;
+
+        case "Namn Ö-A":
+            sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder ORDER BY Namn DESC";
+            break;
+
+        case "KundID stigande":
+            sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder ORDER BY KundID ASC";
+            break;
+
+        case "KundID fallande":
+            sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder ORDER BY KundID DESC";
+            break;
+    }
+
+    hamtaOchVisa(sql);
     }//GEN-LAST:event_CBOXsorteraActionPerformed
 
     private void TXTsokfunktionKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXTsokfunktionKeyPressed
-        
+    String sokText = TXTsokfunktion.getText();
+    sokKunder(sokText);
     }//GEN-LAST:event_TXTsokfunktionKeyPressed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        visaAllaKunder();
+        
+    }//GEN-LAST:event_formWindowOpened
+
+    private void TXThanteraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TXThanteraActionPerformed
+        RegistreraKunder RegKunder = new RegistreraKunder(idb);
+        RegKunder.setVisible(true);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TXThanteraActionPerformed
 
     /**
      * @param args the command line arguments
@@ -255,7 +311,7 @@ public class Kundsida extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Kundsida().setVisible(true));
+      //  java.awt.EventQueue.invokeLater(() -> new Kundsida().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
