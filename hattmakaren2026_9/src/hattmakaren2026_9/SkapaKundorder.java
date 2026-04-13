@@ -1,24 +1,29 @@
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package hattmakaren2026_9;
 
-/**
- *
- * @author carlbrandstrom
- */
-public class SkapaKundorder extends javax.swing.JFrame {
-    
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(SkapaKundorder.class.getName());
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import javax.swing.JOptionPane;
 
+
+
+    
     /**
      * Creates new form SkapaKundorder
      */
-    public SkapaKundorder() {
-        initComponents();
-    }
+public class SkapaKundorder extends javax.swing.JFrame {
 
+    // 1. Konstruktor
+    public SkapaKundorder() {
+        initComponents();   // Skapar utseendet
+        loadComboData();    // Hämtar kunder från DB
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -28,31 +33,88 @@ public class SkapaKundorder extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        btnValjKund = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setText("Skapa Kundorder");
+
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kurt Lupton", "Mikael Maskerad", "Lotta Larsson", "Sofia Sömmerska", "Erik Export" }));
+
+        btnValjKund.setText("Välj");
+        btnValjKund.addActionListener(this::btnValjKundActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(28, 28, 28)
+                        .addComponent(btnValjKund)))
+                .addContainerGap(147, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(jLabel1)
+                .addGap(43, 43, 43)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnValjKund)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(191, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
+/**
+ * @author carlbrandstrom
+ */
+                       
+    private void btnValjKundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValjKundActionPerformed
+    String valt = jComboBox1.getSelectedItem().toString();
+    System.out.println("Du valde: " + valt); // TODO add your handling code here:
+    }//GEN-LAST:event_btnValjKundActionPerformed
+
+    
+    // 3. Metod för att hämta data från MySQL
+    public void loadComboData() {
+        try {
+            jComboBox1.removeAllItems();
+
+            String url = "jdbc:mysql://localhost:3306/hattmakaren?zeroDateTimeBehavior=CONVERT_TO_NULL";
+            Connection conn = DriverManager.getConnection(url, "root", "Nikko22b");
+
+            String sql = "SELECT namn FROM Kunder";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                jComboBox1.addItem(rs.getString("namn"));
+            }
+
+            rs.close();
+            pst.close();
+            conn.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Databasfel: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    // 4. Main-metod för att starta fönstret
     public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
@@ -60,15 +122,26 @@ public class SkapaKundorder extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
-        //</editor-fold>
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new SkapaKundorder().setVisible(true));
+        java.awt.EventQueue.invokeLater(() -> {
+            new SkapaKundorder().setVisible(true);
+        });
     }
 
+
+
+    
+    
+    
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnValjKund;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
+
 }

@@ -66,6 +66,11 @@ public class LagerfordaModeller extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jtHattmodeller = new javax.swing.JTable();
+        tftModellID = new javax.swing.JTextField();
+        tftAntal = new javax.swing.JTextField();
+        btnOkaLager = new javax.swing.JButton();
+        lblModellID = new javax.swing.JLabel();
+        lblAntal = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,25 +87,100 @@ public class LagerfordaModeller extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jtHattmodeller);
 
+        tftModellID.setColumns(10);
+        tftModellID.addActionListener(this::tftModellIDActionPerformed);
+
+        tftAntal.setColumns(10);
+
+        btnOkaLager.setText("Öka lager");
+        btnOkaLager.addActionListener(this::btnOkaLagerActionPerformed);
+
+        lblModellID.setText("ModellID");
+
+        lblAntal.setText("Antal");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(38, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 595, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 595, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(tftModellID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblModellID))
+                        .addGap(53, 53, 53)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblAntal)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(tftAntal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(btnOkaLager)))))
                 .addGap(31, 31, 31))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(119, Short.MAX_VALUE)
+                .addContainerGap(21, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblModellID)
+                    .addComponent(lblAntal))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(tftModellID, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(tftAntal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnOkaLager))
+                .addGap(46, 46, 46)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 328, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btnOkaLagerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOkaLagerActionPerformed
+    try {
+    String modellIDText = tftModellID.getText().trim();
+    String antalText = tftAntal.getText().trim();
+    // TODO add your han
+    if (modellIDText.isEmpty() || antalText.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Fyll i både ModellID och antal!");
+        return;
+    }
+    
+    int modellID = Integer.parseInt(modellIDText);
+    int antal = Integer.parseInt(antalText);
+    
+    if (antal <= 0) {
+        JOptionPane.showMessageDialog(this, "Antalet måste vara större än 0");
+        return;
+    }
+    
+    String sql = "UPDATE Hattmodeller "
+            + "SET Lagersaldo = Lagersaldo + " + antal + " "
+            + "WHERE ModellID = " + modellID; 
+    
+    idb.update(sql);
+    JOptionPane.showMessageDialog(this, "Lagersaldot har uppdaterats");
+    
+    fyllTabell();
+
+    tftModellID.setText("");
+    tftAntal.setText("");
+    
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "ModellID och antal måste vara siffror.");
+    } catch (InfException ex) {
+         JOptionPane.showMessageDialog(this, "Fel vid uppdatering: " + ex.getMessage());
+    }
+    
+    }//GEN-LAST:event_btnOkaLagerActionPerformed
+
+    private void tftModellIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tftModellIDActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tftModellIDActionPerformed
 
     /**
      * @param args the command line arguments
@@ -128,7 +208,12 @@ public class LagerfordaModeller extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnOkaLager;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jtHattmodeller;
+    private javax.swing.JLabel lblAntal;
+    private javax.swing.JLabel lblModellID;
+    private javax.swing.JTextField tftAntal;
+    private javax.swing.JTextField tftModellID;
     // End of variables declaration//GEN-END:variables
 }
