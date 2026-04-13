@@ -115,6 +115,28 @@ public class Kundsida extends javax.swing.JFrame {
             e.printStackTrace();
         }
     }
+    
+    private void hamtaOchVisa(String sql) {
+    try {
+        ArrayList<HashMap<String, String>> resultat = idb.fetchRows(sql);
+
+        DefaultTableModel model = (DefaultTableModel) TBLkund.getModel();
+        model.setRowCount(0);
+
+        for (HashMap<String, String> rad : resultat) {
+            model.addRow(new Object[]{
+                rad.get("KundID"),
+                rad.get("Namn"),
+                rad.get("Epost"),
+                rad.get("Telefon"),
+                rad.get("Adress")
+            });
+        }
+
+    } catch (InfException e) {
+        e.printStackTrace();
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -174,7 +196,7 @@ public class Kundsida extends javax.swing.JFrame {
         TXThantera.setText("Hantera");
         TXThantera.addActionListener(this::TXThanteraActionPerformed);
 
-        CBOXsortera.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sortera...", "Stigande", "Fallande", "Alfabetiskt" }));
+        CBOXsortera.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Namn A-Ö", "Namn Ö-A", "KundID stigande", "KundID fallande" }));
         CBOXsortera.addActionListener(this::CBOXsorteraActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -226,7 +248,29 @@ public class Kundsida extends javax.swing.JFrame {
     }//GEN-LAST:event_TXTsokfunktionActionPerformed
 
     private void CBOXsorteraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CBOXsorteraActionPerformed
-        // TODO add your handling code here:
+        String val = CBOXsortera.getSelectedItem().toString();
+
+    String sql = "";
+
+    switch (val) {
+        case "Namn A-Ö":
+            sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder ORDER BY Namn ASC";
+            break;
+
+        case "Namn Ö-A":
+            sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder ORDER BY Namn DESC";
+            break;
+
+        case "KundID stigande":
+            sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder ORDER BY KundID ASC";
+            break;
+
+        case "KundID fallande":
+            sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder ORDER BY KundID DESC";
+            break;
+    }
+
+    hamtaOchVisa(sql);
     }//GEN-LAST:event_CBOXsorteraActionPerformed
 
     private void TXTsokfunktionKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_TXTsokfunktionKeyPressed
