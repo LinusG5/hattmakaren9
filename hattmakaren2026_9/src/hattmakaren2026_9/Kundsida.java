@@ -1,3 +1,5 @@
+package hattmakaren2026_9;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
@@ -25,24 +27,99 @@ public class Kundsida extends javax.swing.JFrame {
      */
     public Kundsida() {
         initComponents();
+        try {
+        String dbPath = "C:\\db\\HOGDB.FDB";   // ÄNDRA till din sökväg
+        db = new InfDB(dbPath);
+    } catch (InfException e) {
+        JOptionPane.showMessageDialog(this, "Kunde inte ansluta till databasen!");
+    }
     }
     
-    public void sokKunder(String soknamn) {
-    
-        DefaultTableModel model = (defaultTableModel) TBLkund.getmodel();
-        model.setRowCount(0);
+    public void visaAllaKunder() {
         
+// Rensa tabellen först
+    ((DefaultTableModel) TBLkund.getModel()).setRowCount(0);
+
+    try {
+        String sql = "SELECT KundID, namn, epost, Telefon, Adress FROM Users";
+        
+        ArrayList<HashMap<String, String>> resultat = db.fetchRows(sql);
+
+        // Kolla om det kom tillbaka några resultat
+        if (resultat == null || resultat.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Det finns inga kunder i databasen",
+                "Inga kunder", 
+                JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Lägg till raderna i tabellen
+        for (HashMap<String, String> rad : resultat) {
+            Object[] row = {
+                rad.get("KUNDID"),
+                rad.get("NAMN"),
+                rad.get("EPOST"),
+                rad.get("TELEFON"),
+                rad.get("ADRESS")
+            };
+            ((DefaultTableModel) TBLkund.getModel()).addRow(row);
+        }
+
+    } catch (InfException e) {
+        JOptionPane.showMessageDialog(this,
+            "Fel vid hämtning av kunder:\n" + e.getMessage(),
+            "Databasfel", 
+            JOptionPane.ERROR_MESSAGE);
+        e.printStackTrace();
+    }
+}
+    
+    public void sokKunder(String sokText) {
+    
+        // Rensa tabellen
+        ((DefaultTableModel) TBLkund.getModel()).setRowCount(0);
+
+        // Om sökfältet är tomt → visa alla kunder istället
+        if (sokText == null || sokText.trim().isEmpty()) {
+            visaAllaKunder();
+            return;
+        }
+
         try {
-            String sql = "SELECT KundID, Namn, Epost, Telefon, Adress " +
-                         "FROM Users WHERE Namn LIKE ?";
-            
-            ArrayList<hashmap<String, String>> resultat = 
-                db.fetchrows(sql, "%", sokNamn, "%");
-            
+            // Använd LIKE direkt i SQL-strängen (InfDB gillar detta bättre)
+            String sql = "SELECT KundID, namn, epost, Telefon, Adress " +
+                         "FROM Users WHERE namn LIKE '%" + sokText.trim() + "%'";
+
+            // Här skickar vi INGEN extra parameter
+            ArrayList<HashMap<String, String>> resultat = db.fetchRows(sql);
+
             if (resultat == null || resultat.isEmpty()) {
-                "Inga kunder hittades som matchar: " + sokNamn, 
-                "Inga resultat", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                    "Inga kunder hittades som matchar: " + sokText,
+                    "Inga resultat", 
+                    JOptionPane.INFORMATION_MESSAGE);
+                return;
+        }
+
+            // Fyll tabellen med resultaten
+            for (HashMap<String, String> rad : resultat) {
+                Object[] row = {
+                    rad.get("KUNDID"),
+                    rad.get("NAMN"),
+                    rad.get("EPOST"),
+                    rad.get("TELEFON"),
+                    rad.get("ADRESS")
+                };
+                ((DefaultTableModel) TBLkund.getModel()).addRow(row);
             }
+
+        } catch (InfException e) {
+            JOptionPane.showMessageDialog(this,
+                "Fel vid sökning:\n" + e.getMessage(),
+                "Databasfel", 
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
         }
     }
 
