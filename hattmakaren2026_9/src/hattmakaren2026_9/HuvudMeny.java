@@ -36,6 +36,7 @@ public class HuvudMeny extends javax.swing.JFrame {
         lblValkommenText = new javax.swing.JLabel();
         btnMaterial = new javax.swing.JButton();
         btnOrderMeny = new javax.swing.JButton();
+        btnLagerfordaModeller = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,21 +48,25 @@ public class HuvudMeny extends javax.swing.JFrame {
         btnOrderMeny.setText("Order meny");
         btnOrderMeny.addActionListener(this::btnOrderMenyActionPerformed);
 
+        btnLagerfordaModeller.setText("Lagerförda modeller");
+        btnLagerfordaModeller.addActionListener(this::btnLagerfordaModellerActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(278, 278, 278)
-                        .addComponent(lblValkommenText, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(163, 163, 163)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(btnOrderMeny, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(btnMaterial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                .addGap(278, 278, 278)
+                .addComponent(lblValkommenText, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(283, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(163, 163, 163)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnOrderMeny, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnMaterial, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnLagerfordaModeller)
+                .addGap(183, 183, 183))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -69,7 +74,9 @@ public class HuvudMeny extends javax.swing.JFrame {
                 .addGap(22, 22, 22)
                 .addComponent(lblValkommenText)
                 .addGap(60, 60, 60)
-                .addComponent(btnMaterial)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnMaterial)
+                    .addComponent(btnLagerfordaModeller))
                 .addGap(62, 62, 62)
                 .addComponent(btnOrderMeny)
                 .addContainerGap(294, Short.MAX_VALUE))
@@ -81,17 +88,30 @@ public class HuvudMeny extends javax.swing.JFrame {
     private void btnMaterialActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMaterialActionPerformed
         // TODO add your handling code here:
         
-        new MaterialSidan(idb).setVisible(true);
+        try {
+            new MaterialSidan(idb).setVisible(true);
+        } catch (InfException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
          
         
     }//GEN-LAST:event_btnMaterialActionPerformed
 
     private void btnOrderMenyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderMenyActionPerformed
         // TODO add your handling code here:
-       
-        new OrderMeny().setVisible(true);  
+        try {
+            new OrderMeny(idb).setVisible(true);
+        } catch (InfException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+          
         
     }//GEN-LAST:event_btnOrderMenyActionPerformed
+
+    private void btnLagerfordaModellerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLagerfordaModellerActionPerformed
+    LagerfordaModeller lagerFonster = new LagerfordaModeller(idb);
+    lagerFonster.setVisible(true);// TODO add your handling code here:
+    }//GEN-LAST:event_btnLagerfordaModellerActionPerformed
 
     
     /**
@@ -121,6 +141,7 @@ public class HuvudMeny extends javax.swing.JFrame {
 }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLagerfordaModeller;
     private javax.swing.JButton btnMaterial;
     private javax.swing.JButton btnOrderMeny;
     private javax.swing.JLabel lblValkommenText;

@@ -3,6 +3,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
  */
 package hattmakaren2026_9;
+import oru.inf.InfException;
+import oru.inf.InfDB;
 
 /**
  *
@@ -11,12 +13,14 @@ package hattmakaren2026_9;
 public class OrderMeny extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(OrderMeny.class.getName());
-
+    private InfDB idb;
+    
     /**
      * Creates new form OrderMeny
      */
-    public OrderMeny() {
+    public OrderMeny(InfDB idb) throws InfException {
         initComponents();
+        this.idb = idb;
     }
 
     /**
@@ -30,7 +34,7 @@ public class OrderMeny extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         btnSkapaKundorder = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        btnOrderHistorik = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -39,8 +43,8 @@ public class OrderMeny extends javax.swing.JFrame {
         btnSkapaKundorder.setText("Skapa kundorder");
         btnSkapaKundorder.addActionListener(this::btnSkapaKundorderActionPerformed);
 
-        jButton2.setText("Orderhistorik");
-        jButton2.addActionListener(this::jButton2ActionPerformed);
+        btnOrderHistorik.setText("Orderhistorik");
+        btnOrderHistorik.addActionListener(this::btnOrderHistorikActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -53,7 +57,7 @@ public class OrderMeny extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(34, 34, 34)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnOrderHistorik, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(btnSkapaKundorder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
@@ -65,16 +69,20 @@ public class OrderMeny extends javax.swing.JFrame {
                 .addGap(43, 43, 43)
                 .addComponent(btnSkapaKundorder)
                 .addGap(50, 50, 50)
-                .addComponent(jButton2)
+                .addComponent(btnOrderHistorik)
                 .addContainerGap(116, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void btnOrderHistorikActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOrderHistorikActionPerformed
+        try {
+            new OrderHistorik(idb).setVisible(true);
+        } catch (InfException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+    }//GEN-LAST:event_btnOrderHistorikActionPerformed
 
     private void btnSkapaKundorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkapaKundorderActionPerformed
        new SkapaKundorder().setVisible(true);
@@ -83,31 +91,31 @@ public class OrderMeny extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    //public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
-            logger.log(java.util.logging.Level.SEVERE, null, ex);
-        }
+        //try {
+            //for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+              //  if ("Nimbus".equals(info.getName())) {
+                //    javax.swing.UIManager.setLookAndFeel(info.getClassName());
+                  //  break;
+                //}
+            //}
+        //} catch (ReflectiveOperationException | javax.swing.UnsupportedLookAndFeelException ex) {
+          //  logger.log(java.util.logging.Level.SEVERE, null, ex);
+        //}
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new OrderMeny().setVisible(true));
-    }
+        //java.awt.EventQueue.invokeLater(() -> new OrderMeny().setVisible(true));
+    //}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnOrderHistorik;
     private javax.swing.JButton btnSkapaKundorder;
-    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

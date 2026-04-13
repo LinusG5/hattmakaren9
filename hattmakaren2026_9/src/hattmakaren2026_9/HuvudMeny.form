@@ -24,20 +24,19 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="278" max="-2" attributes="0"/>
-                      <Component id="lblValkommenText" min="-2" pref="178" max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="163" max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" max="-2" attributes="0">
-                          <Component id="btnOrderMeny" max="32767" attributes="0"/>
-                          <Component id="btnMaterial" max="32767" attributes="0"/>
-                      </Group>
-                  </Group>
-              </Group>
+              <EmptySpace min="-2" pref="278" max="-2" attributes="0"/>
+              <Component id="lblValkommenText" min="-2" pref="178" max="-2" attributes="0"/>
               <EmptySpace pref="283" max="32767" attributes="0"/>
+          </Group>
+          <Group type="102" alignment="0" attributes="0">
+              <EmptySpace min="-2" pref="163" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" max="-2" attributes="0">
+                  <Component id="btnOrderMeny" max="32767" attributes="0"/>
+                  <Component id="btnMaterial" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace max="32767" attributes="0"/>
+              <Component id="btnLagerfordaModeller" min="-2" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="183" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
@@ -47,7 +46,10 @@
               <EmptySpace min="-2" pref="22" max="-2" attributes="0"/>
               <Component id="lblValkommenText" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="60" max="-2" attributes="0"/>
-              <Component id="btnMaterial" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="3" attributes="0">
+                  <Component id="btnMaterial" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="btnLagerfordaModeller" alignment="3" min="-2" max="-2" attributes="0"/>
+              </Group>
               <EmptySpace min="-2" pref="62" max="-2" attributes="0"/>
               <Component id="btnOrderMeny" min="-2" max="-2" attributes="0"/>
               <EmptySpace pref="294" max="32767" attributes="0"/>
@@ -75,6 +77,14 @@
       </Properties>
       <Events>
         <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnOrderMenyActionPerformed"/>
+      </Events>
+    </Component>
+    <Component class="javax.swing.JButton" name="btnLagerfordaModeller">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Lagerf&#xf6;rda modeller"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnLagerfordaModellerActionPerformed"/>
       </Events>
     </Component>
   </SubComponents>
