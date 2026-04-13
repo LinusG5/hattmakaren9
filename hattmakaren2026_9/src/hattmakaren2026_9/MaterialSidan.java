@@ -21,8 +21,8 @@ public class MaterialSidan extends javax.swing.JFrame {
         this.idb = idb;
         fyllOrderLista();
     }
-
-
+    
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -84,14 +84,15 @@ try {
             }
             String valdOrderIds = orderIdsBuilder.toString();
             
-            String sqlFraga = "SELECT m.Namn, m.LagerSaldo, " +
-                    "SUM(r.Antal * hm.Antal) AS TotaltBehov " + 
-                    "FROM Ordrar o " + 
-                    "JOIN Orderrader r ON o.OrderID = r.OrderID " + 
-                    "JOIN Hatt_Material hm ON r.ModellID = hm.ModellID " +
-                    "JOIN Material m ON hm.MaterialID = m.MaterialID " + 
-                    "WHERE o.OrderID IN (" + valdOrderIds + ") " +
-                    "GROUP BY m.MaterialID, m.Namn, m.LagerSaldo;";
+String sqlFraga = 
+    "SELECT m.Namn, m.LagerSaldo, o.OrderID, " +
+    "SUM(r.Antal * hm.Antal) AS TotaltBehov " +
+    "FROM Ordrar o " +
+    "JOIN Orderrader r ON o.OrderID = r.OrderID " +
+    "JOIN Hatt_Material hm ON r.ModellID = hm.ModellID " +
+    "JOIN Material m ON hm.MaterialID = m.MaterialID " +
+    "WHERE o.OrderID IN (" + valdOrderIds + ") " +
+    "GROUP BY m.MaterialID, m.Namn, m.LagerSaldo, o.OrderID;";
 
             java.util.ArrayList<java.util.HashMap<String, String>> resultatLista = idb.fetchRows(sqlFraga);
             
@@ -100,15 +101,19 @@ textTillRutan.append("--- INKÖPSLISTA FÖR ORDER ").append(valdOrderIds).append
             
             if(resultatLista != null && !resultatLista.isEmpty()) {
                 for (java.util.HashMap<String, String> rad : resultatLista) {
-                    String materialNamn = rad.get("Namn"); 
-                    String behov = rad.get("TotaltBehov");
-                    String saldo = rad.get("LagerSaldo");
-                    
-textTillRutan.append("Material: ").append(materialNamn).append("\n")
-                .append("Krävs för tillverkning: ").append(behov).append("\n")
-                .append("(Finns i lager: ").append(saldo).append(")\n")
-                .append("----------------------------\n");   
-                }
+
+    String orderID = rad.get("OrderID");
+    String materialNamn = rad.get("Namn");
+    String behov = rad.get("TotaltBehov");
+    String saldo = rad.get("LagerSaldo");
+
+    textTillRutan.append("Order: ").append(orderID).append("\n")
+            .append("Material: ").append(materialNamn).append("\n")
+            .append("Krävs för tillverkning: ").append(behov).append("\n")
+            .append("(Finns i lager: ").append(saldo).append(")\n")
+            .append("----------------------------\n");
+}
+
             } else { 
                 System.out.println("Inget material behövs, eller så hittades inte ordrarna.");
             }
@@ -144,5 +149,4 @@ private void fyllOrderLista() {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JList<String> lstOrdrar;
     // End of variables declaration//GEN-END:variables
-
 }
