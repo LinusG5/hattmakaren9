@@ -12,18 +12,33 @@ import java.sql.ResultSet;
 import javax.swing.JOptionPane;
 
 
-
     
     /**
      * Creates new form SkapaKundorder
      */
 public class SkapaKundorder extends javax.swing.JFrame {
 
-    // 1. Konstruktor
-    public SkapaKundorder() {
-        initComponents();   // Skapar utseendet
-        loadComboData();    // Hämtar kunder från DB
+    // 1. Flytta upp din inner class hit så den är lätt att hitta
+    public class KundItem {
+        int id;
+        String namn;
+
+        public KundItem(int id, String namn) {
+            this.id = id;
+            this.namn = namn;
+        }
+
+        @Override
+        public String toString() {
+            return namn; // Gör att bara namnet syns i listan
+        }
     }
+
+    public SkapaKundorder() {
+        initComponents();
+        loadComboData();
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -34,17 +49,21 @@ public class SkapaKundorder extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jComboBox1 = new javax.swing.JComboBox();
         btnValjKund = new javax.swing.JButton();
+        btnPaborjaOrder = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Skapa Kundorder");
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Kurt Lupton", "Mikael Maskerad", "Lotta Larsson", "Sofia Sömmerska", "Erik Export" }));
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Kurt Lupton", "Mikael Maskerad", "Lotta Larsson", "Sofia Sömmerska", "Erik Export" }));
 
         btnValjKund.setText("Välj");
         btnValjKund.addActionListener(this::btnValjKundActionPerformed);
+
+        btnPaborjaOrder.setText("Påbörja Order");
+        btnPaborjaOrder.addActionListener(this::btnPaborjaOrderActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -57,9 +76,12 @@ public class SkapaKundorder extends javax.swing.JFrame {
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(16, 16, 16)
-                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(28, 28, 28)
-                        .addComponent(btnValjKund)))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnPaborjaOrder)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(28, 28, 28)
+                                .addComponent(btnValjKund)))))
                 .addContainerGap(147, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -71,77 +93,95 @@ public class SkapaKundorder extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnValjKund)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(191, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 88, Short.MAX_VALUE)
+                .addComponent(btnPaborjaOrder)
+                .addGap(80, 80, 80))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+   
 /**
  * @author carlbrandstrom
  */
                        
     private void btnValjKundActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnValjKundActionPerformed
-    String valt = jComboBox1.getSelectedItem().toString();
-    System.out.println("Du valde: " + valt); // TODO add your handling code here:
+         Object valt = jComboBox1.getSelectedItem();
+        if (valt != null) {
+            System.out.println("Du valde: " + valt.toString());
     }//GEN-LAST:event_btnValjKundActionPerformed
+    }
+    private void btnPaborjaOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPaborjaOrderActionPerformed
+       try {
+            Object item = jComboBox1.getSelectedItem();
+            if (!(item instanceof KundItem)) {
+                JOptionPane.showMessageDialog(this, "Välj en giltig kund först!");
+                return;
+           
+    }//GEN-LAST:event_btnPaborjaOrderActionPerformed
 
-    
-    // 3. Metod för att hämta data från MySQL
-    public void loadComboData() {
-        try {
-            jComboBox1.removeAllItems();
 
+            KundItem valdKund = (KundItem) item;
+            int kundID = valdKund.id;
+
+            // Använd samma uppkoppling som i loadComboData om du inte har en DatabaseConnection-klass
             String url = "jdbc:mysql://localhost:3306/hattmakaren?zeroDateTimeBehavior=CONVERT_TO_NULL";
             Connection conn = DriverManager.getConnection(url, "root", "Nikko22b");
 
-            String sql = "SELECT namn FROM Kunder";
+            String sql = "INSERT INTO ordrar (KundID, OrderDatum) VALUES (?, NOW())";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            pst.setInt(1, kundID);
+            pst.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Order skapad för kund ID: " + kundID);
+
+            pst.close();
+            conn.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Kunde inte skapa order: " + e.getMessage());
+            e.printStackTrace();
+        }    
+    }
+    public void loadComboData() {
+        try {
+            jComboBox1.removeAllItems();
+            String url = "jdbc:mysql://localhost:3306/hattmakaren?zeroDateTimeBehavior=CONVERT_TO_NULL";
+            Connection conn = DriverManager.getConnection(url, "root", "Nikko22b");
+
+            String sql = "SELECT namn, kundID FROM Kunder";
             PreparedStatement pst = conn.prepareStatement(sql);
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
-                jComboBox1.addItem(rs.getString("namn"));
+                int id = rs.getInt("kundID");
+                String namn = rs.getString("namn");
+                // FIX: Ta bort "int" och "String" inuti parentesen
+                jComboBox1.addItem(new KundItem(id, namn));
             }
 
             rs.close();
             pst.close();
             conn.close();
-
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Databasfel: " + e.getMessage());
-            e.printStackTrace();
         }
     }
-
-    // 4. Main-metod för att starta fönstret
+    
     public static void main(String args[]) {
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
-
-        java.awt.EventQueue.invokeLater(() -> {
+        java.awt.EventQueue.invokeLater(new Runnable() {
+           public void run() {
             new SkapaKundorder().setVisible(true);
+           }
         });
     }
-
-
-
-    
-    
-    
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnPaborjaOrder;
     private javax.swing.JButton btnValjKund;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox jComboBox1;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
-
 }

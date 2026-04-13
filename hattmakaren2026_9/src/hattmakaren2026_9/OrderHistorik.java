@@ -55,6 +55,7 @@ public class OrderHistorik extends javax.swing.JFrame {
         btnVisaHistorik = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         txtHistorikText = new javax.swing.JTextArea();
+        btnTillbaka = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -70,14 +71,19 @@ public class OrderHistorik extends javax.swing.JFrame {
         txtHistorikText.setRows(5);
         jScrollPane1.setViewportView(txtHistorikText);
 
+        btnTillbaka.setText("Tillbaka");
+        btnTillbaka.addActionListener(this::btnTillbakaActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(26, 26, 26)
-                .addComponent(cmbKunder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(50, 50, 50)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(cmbKunder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnTillbaka))
+                .addGap(47, 47, 47)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(btnVisaHistorik)
@@ -86,7 +92,7 @@ public class OrderHistorik extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(lblOrderHistorikRubrik, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(171, 171, 171)))
-                .addContainerGap(46, Short.MAX_VALUE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -94,10 +100,13 @@ public class OrderHistorik extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addComponent(lblOrderHistorikRubrik)
                 .addGap(33, 33, 33)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(cmbKunder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(btnVisaHistorik))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(cmbKunder, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnVisaHistorik))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnTillbaka))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(47, Short.MAX_VALUE))
         );
@@ -118,7 +127,7 @@ public class OrderHistorik extends javax.swing.JFrame {
             return;
         }
         try {
-            String fraga = "SELECT Ordrar.OrderDatum, Ordrar.Status, Ordrar.TotalPrisInclMoms "
+            String fraga = "SELECT Ordrar.OrderDatum, Ordrar.TotalPrisInclMoms "
                     + "FROM Ordrar "
                     + "JOIN Kunder ON Kunder.KundID = Ordrar.KundID "
                     + "WHERE Kunder.Namn = '" + valtNamn + "'";
@@ -131,7 +140,7 @@ public class OrderHistorik extends javax.swing.JFrame {
 
                 for (HashMap<String, String> rad : rader) {
                     String datum = rad.get("OrderDatum");
-                    String status = rad.get("Status");
+                    // String status = rad.get("Status");
                     String pris = rad.get("TotalPrisInclMoms");
 
                     if (pris == null) {
@@ -139,7 +148,7 @@ public class OrderHistorik extends javax.swing.JFrame {
                     }
 
                     txtHistorikText.append("Datum: " + datum + "\n");
-                    txtHistorikText.append("Status: " + status + "\n");
+                    // txtHistorikText.append("Status: " + status + "\n");
                     txtHistorikText.append("Pris: " + pris + "kr inkl.moms\n");
                     txtHistorikText.append("---------------------------\n");
 
@@ -155,11 +164,16 @@ public class OrderHistorik extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnVisaHistorikActionPerformed
 
+    private void btnTillbakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTillbakaActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_btnTillbakaActionPerformed
+
     /**
      * @param args the command line arguments
      */
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnTillbaka;
     private javax.swing.JButton btnVisaHistorik;
     private javax.swing.JComboBox<String> cmbKunder;
     private javax.swing.JScrollPane jScrollPane1;

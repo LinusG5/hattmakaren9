@@ -19,7 +19,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class Kundsida extends javax.swing.JFrame {
-    private InfDB db;
+    private InfDB idb;
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Kundsida.class.getName());
     /**
@@ -27,7 +27,7 @@ public class Kundsida extends javax.swing.JFrame {
      */
     public Kundsida(InfDB idb) {
         initComponents();
-        this.db = idb;
+        this.idb = idb;
         visaAllaKunder(); 
 }
     
@@ -38,7 +38,7 @@ public class Kundsida extends javax.swing.JFrame {
         try {
             String sql = "SELECT KundID, Namn, Epost, Telefon, Adress FROM Kunder";
         
-            ArrayList<HashMap<String, String>> resultat = db.fetchRows(sql);
+            ArrayList<HashMap<String, String>> resultat = idb.fetchRows(sql);
 
             // Kolla om det kom tillbaka några resultat
             if (resultat == null || resultat.isEmpty()) {
@@ -92,7 +92,7 @@ public class Kundsida extends javax.swing.JFrame {
                          "OR Adress LIKE '%" + sokText.trim() + "%'";
 
             // Här skickar vi INGEN extra parameter
-            ArrayList<HashMap<String, String>> resultat = db.fetchRows(sql);
+            ArrayList<HashMap<String, String>> resultat = idb.fetchRows(sql);
 
 
             // Fyll tabellen med resultaten
@@ -172,6 +172,7 @@ public class Kundsida extends javax.swing.JFrame {
         });
 
         TXThantera.setText("Hantera");
+        TXThantera.addActionListener(this::TXThanteraActionPerformed);
 
         CBOXsortera.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Sortera...", "Stigande", "Fallande", "Alfabetiskt" }));
         CBOXsortera.addActionListener(this::CBOXsorteraActionPerformed);
@@ -215,7 +216,7 @@ public class Kundsida extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BTNmenyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNmenyActionPerformed
-    HuvudMeny hm = new HuvudMeny(db);
+    HuvudMeny hm = new HuvudMeny(idb);
     hm.setVisible(true);
     this.dispose(); // stänger Kundsida
     }//GEN-LAST:event_BTNmenyActionPerformed
@@ -237,6 +238,12 @@ public class Kundsida extends javax.swing.JFrame {
         visaAllaKunder();
         
     }//GEN-LAST:event_formWindowOpened
+
+    private void TXThanteraActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_TXThanteraActionPerformed
+        RegistreraKunder RegKunder = new RegistreraKunder(idb);
+        RegKunder.setVisible(true);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_TXThanteraActionPerformed
 
     /**
      * @param args the command line arguments
@@ -260,7 +267,7 @@ public class Kundsida extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(() -> new Kundsida().setVisible(true));
+      //  java.awt.EventQueue.invokeLater(() -> new Kundsida().setVisible(true));
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
