@@ -123,7 +123,7 @@ public class RegistreraKunder extends javax.swing.JFrame {
 
         jLabel4.setText("Adress");
 
-        lblSokKund.setText("Sök fram kund");
+        lblSokKund.setText("Sök fram kundID");
 
         tftSokFramKund.addActionListener(this::tftSokFramKundActionPerformed);
 
@@ -182,7 +182,7 @@ public class RegistreraKunder extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnRegNyKund)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 254, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(37, Short.MAX_VALUE))
+                .addContainerGap(29, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(BTNtillbaka)
