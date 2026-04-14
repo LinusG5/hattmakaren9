@@ -77,17 +77,17 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
                 .addGap(23, 23, 23)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSkapaPdf)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(249, Short.MAX_VALUE))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 671, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(27, 27, 27)
+                .addGap(68, 68, 68)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
                 .addComponent(btnSkapaPdf)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(282, Short.MAX_VALUE))
+                .addContainerGap(253, Short.MAX_VALUE))
         );
 
         pack();
@@ -134,6 +134,34 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
         }
     }
     
+    private void exporteraMaterialbestallning(List<MaterialRad> bestallning) {
+    String datum = java.time.LocalDate.now().toString();
+    String filnamn = "Materialbestallning_" + datum + ".txt";
+
+    try (java.io.PrintWriter writer = new java.io.PrintWriter(filnamn, "UTF-8")) {
+        writer.println("======= MATERIALBESTÄLLNING =======");
+        writer.println("Datum: " + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        writer.println("-----------------------------------");
+
+        double totaltAntalEnheter = 0;
+
+        for (MaterialRad rad : bestallning) {
+            writer.println("Material:  " + rad.material);
+            writer.println("Antal:     " + rad.bestall);
+            writer.println("-----------------------------------");
+            totaltAntalEnheter += rad.bestall;
+        }
+
+        writer.println("Totalt antal enheter: " + totaltAntalEnheter);
+        writer.println("===================================");
+        writer.println("Beställning skapad av systemet.");
+
+        javax.swing.JOptionPane.showMessageDialog(this, "Success! Beställningsfil skapad: " + filnamn);
+        
+    } catch (Exception e) {
+        javax.swing.JOptionPane.showMessageDialog(this, "Fel vid export: " + e.getMessage());
+    }
+}
     private void initMaterialTabell() {
         materialModel = new DefaultTableModel(
                 new Object[]{"Kundorder", "Material", "Antal material", "Lagersaldo", "Behöver beställas", "Beställ?"},
@@ -144,7 +172,6 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
                 if (columnIndex == 5) return Boolean.class; 
                 return super.getColumnClass(columnIndex);
             }
-
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 4 || column == 5; 
@@ -152,7 +179,6 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
         };
         tblMaterial.setModel(materialModel);
     }
-
     private List<HashMap<String, String>> hamtaMaterialbehov(List<Integer> orderIds) throws InfException {
 
         String ids = orderIds.stream()
@@ -173,24 +199,21 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
         return idb.fetchRows(sql);
     }
     
-    
     private void btnSkapaPdfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkapaPdfActionPerformed
-if (tblMaterial.isEditing()) {
+        if (tblMaterial.isEditing()) {
             tblMaterial.getCellEditor().stopCellEditing();
         }
-
         List<MaterialRad> bestallning = hamtaBestallningsrader();
 
         if (bestallning.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Du måste kryssa i 'Beställ?' på minst ett material och ange ett antal över 0.");
             return;
         }
-
         StringBuilder kvitto = new StringBuilder("Följande material kommer beställas och läggas till i lagret:\n\n");
         for(MaterialRad rad : bestallning) {
-            kvitto.append("• ").append(rad.material).append(" - Antal: ").append(rad.bestall).append("\n");
+            kvitto.append("- ").append(rad.material).append(" - Antal: ").append(rad.bestall).append("\n");
         }
-        kvitto.append("\nVill du genomföra beställningen?");
+        kvitto.append("\nVill du genomföra beställningen, och skapa en textfil?");
 
         int svar = JOptionPane.showConfirmDialog(this, kvitto.toString(), "Bekräfta beställning", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
         
@@ -200,8 +223,9 @@ if (tblMaterial.isEditing()) {
                     String sqlUpdate = "UPDATE Material SET LagerSaldo = LagerSaldo + " + rad.bestall + " WHERE Namn = '" + rad.material + "'";
                     idb.update(sqlUpdate);
                 }
-                
+                                exporteraMaterialbestallning(bestallning);
                 JOptionPane.showMessageDialog(this, "Lagret är nu påfyllt i databasen!", "Succé", JOptionPane.INFORMATION_MESSAGE);
+                
                 laddaHelaTabellen();
                 
             } catch (InfException e) {
