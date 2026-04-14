@@ -238,8 +238,6 @@ public class Kundsida extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void BTNmenyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNmenyActionPerformed
-    HuvudMeny hm = new HuvudMeny(idb);
-    hm.setVisible(true);
     this.dispose(); // stänger Kundsida
     }//GEN-LAST:event_BTNmenyActionPerformed
 

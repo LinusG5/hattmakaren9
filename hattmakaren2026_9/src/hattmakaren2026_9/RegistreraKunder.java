@@ -139,6 +139,7 @@ public class RegistreraKunder extends javax.swing.JFrame {
         jScrollPane1.setViewportView(TBLkundInfo);
 
         BTNtillbaka.setText("Tillbaka");
+        BTNtillbaka.addActionListener(this::BTNtillbakaActionPerformed);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -326,6 +327,10 @@ public class RegistreraKunder extends javax.swing.JFrame {
     }
         // TODO add your handling code here:
     }//GEN-LAST:event_btnTaBortActionPerformed
+
+    private void BTNtillbakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNtillbakaActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_BTNtillbakaActionPerformed
 
     /**
      * @param args the command line arguments
