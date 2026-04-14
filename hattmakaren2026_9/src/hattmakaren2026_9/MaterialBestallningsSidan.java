@@ -9,8 +9,6 @@ import oru.inf.InfException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +23,8 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
     
     private DefaultTableModel materialModel;
 
-    
+    private DefaultTableModel lagerModel;
+
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(MaterialBestallningsSidan.class.getName());
 
     /**
@@ -36,6 +35,9 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
         initComponents();
         initMaterialTabell();
        laddaHelaTabellen();
+       initMaterialListaTabell();
+       laddaMaterialLista();
+
     }
 
     /**
@@ -50,6 +52,10 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblMaterial = new javax.swing.JTable();
         btnSkapaPdf = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tblMaterialLista = new javax.swing.JTable();
+        jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -69,25 +75,52 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
         btnSkapaPdf.setText("Beställ material");
         btnSkapaPdf.addActionListener(this::btnSkapaPdfActionPerformed);
 
+        tblMaterialLista.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane1.setViewportView(tblMaterialLista);
+
+        jLabel1.setText("Material utifrån ordrar");
+
+        jLabel2.setText("Allt material");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(23, 23, 23)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(btnSkapaPdf)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 671, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(30, Short.MAX_VALUE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 750, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2)))
+                .addContainerGap(19, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(68, 68, 68)
+                .addGap(23, 23, 23)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(32, 32, 32)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addComponent(btnSkapaPdf)
-                .addContainerGap(253, Short.MAX_VALUE))
+                .addContainerGap(274, Short.MAX_VALUE))
         );
 
         pack();
@@ -134,6 +167,102 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
         }
     }
     
+    private void initMaterialListaTabell() {
+    lagerModel = new DefaultTableModel(
+        new Object[]{"MaterialID", "Material", "Antal i lager", "Antal att beställa", "Genomför beställning", "Markera som beställd"}, 0
+    ) {
+        @Override
+        public Class<?> getColumnClass(int columnIndex) {
+            return (columnIndex == 4 || columnIndex == 5) ? Boolean.class : String.class;
+        }
+
+        @Override
+        public boolean isCellEditable(int row, int column) {
+            return column == 3 || column == 4 || column == 5;
+        }
+    };
+
+    tblMaterialLista.setModel(lagerModel);
+    lagerModel.addTableModelListener(e -> {
+    int row = e.getFirstRow();
+    int col = e.getColumn();
+
+    // Kolumn 5 = "Beställt (DB)"
+    if (col == 5) {
+        sparaBestalltStatus(row);
+    }
+});
+
+}
+    private void sparaBestalltStatus(int row) {
+    try {
+        String materialID = lagerModel.getValueAt(row, 0).toString();
+        boolean bestallt = Boolean.TRUE.equals(lagerModel.getValueAt(row, 5));
+
+        String sql = "UPDATE Material SET Bestallt = " + (bestallt ? "TRUE" : "FALSE") +
+                     " WHERE MaterialID = " + materialID;
+
+        idb.update(sql);
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Fel vid sparande av beställt-status: " + e.getMessage());
+    }
+}
+
+    private void laddaMaterialLista() {
+    try {
+        String sql = "SELECT MaterialID, Namn, LagerSaldo, Bestallt FROM Material";
+        ArrayList<HashMap<String, String>> materialLista = idb.fetchRows(sql);
+
+        lagerModel.setRowCount(0);
+
+        for (HashMap<String, String> rad : materialLista) {
+            lagerModel.addRow(new Object[]{
+                rad.get("MaterialID"),
+                rad.get("Namn"),
+                rad.get("LagerSaldo"),
+                0,                          // Beställ antal
+                false,                      // Beställ?
+                "1".equals(rad.get("Bestallt")) || "true".equalsIgnoreCase(rad.get("Bestallt"))
+
+            });
+        }
+
+    } catch (Exception e) {
+        JOptionPane.showMessageDialog(this, "Fel vid laddning av materiallistan: " + e.getMessage());
+    }
+}
+
+    private List<MaterialRad> hamtaBestallningsraderLager() {
+    List<MaterialRad> lista = new ArrayList<>();
+
+    for (int i = 0; i < lagerModel.getRowCount(); i++) {
+
+        boolean villBestalla = Boolean.TRUE.equals(lagerModel.getValueAt(i, 4));
+        boolean markeraBestallt = Boolean.TRUE.equals(lagerModel.getValueAt(i, 5));
+
+        String material = lagerModel.getValueAt(i, 1).toString();
+        double saldo = Double.parseDouble(lagerModel.getValueAt(i, 2).toString());
+        double bestall = Double.parseDouble(lagerModel.getValueAt(i, 3).toString());
+
+        // Om användaren vill beställa
+        if (villBestalla && bestall > 0) {
+            lista.add(new MaterialRad(0, material, 0, saldo, bestall));
+        }
+
+        // Uppdatera "Beställt" i databasen
+        if (markeraBestallt) {
+            try {
+                idb.update("UPDATE Material SET Bestallt = TRUE WHERE Namn = '" + material + "'");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Fel vid uppdatering av beställt-status: " + e.getMessage());
+            }
+        }
+    }
+
+    return lista;
+}
+ 
     private void exporteraMaterialbestallning(List<MaterialRad> bestallning) {
     String datum = java.time.LocalDate.now().toString();
     String filnamn = "Materialbestallning_" + datum + ".txt";
@@ -164,7 +293,7 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
 }
     private void initMaterialTabell() {
         materialModel = new DefaultTableModel(
-                new Object[]{"Kundorder", "Material", "Antal material", "Lagersaldo", "Behöver beställas", "Beställ?"},
+                new Object[]{"Kundorder", "Material", "Antal material", "Antal i lager", "Antal att beställa", "Genomför beställning"},
                 0
         ) {
             @Override
@@ -203,7 +332,11 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
         if (tblMaterial.isEditing()) {
             tblMaterial.getCellEditor().stopCellEditing();
         }
-        List<MaterialRad> bestallning = hamtaBestallningsrader();
+        List<MaterialRad> bestallning = new ArrayList<>();
+
+bestallning.addAll(hamtaBestallningsrader());
+bestallning.addAll(hamtaBestallningsraderLager()); 
+
 
         if (bestallning.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Du måste kryssa i 'Beställ?' på minst ett material och ange ett antal över 0.");
@@ -277,11 +410,13 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSkapaPdfActionPerformed
 
-  
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnSkapaPdf;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable tblMaterial;
+    private javax.swing.JTable tblMaterialLista;
     // End of variables declaration//GEN-END:variables
 }
