@@ -385,12 +385,15 @@ public class RegistreraKunder extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_btnTaBortActionPerformed
 
+
     private void txtKundIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtKundIDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtKundIDActionPerformed
+
     private void BTNtillbakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNtillbakaActionPerformed
         this.dispose();
     }//GEN-LAST:event_BTNtillbakaActionPerformed
+
 
     /**
      * @param args the command line arguments
