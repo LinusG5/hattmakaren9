@@ -38,6 +38,7 @@ public class OrderMeny extends javax.swing.JFrame {
         btnSkapaFraktsedel = new javax.swing.JButton();
         btnOrderStatus = new javax.swing.JButton();
         btnAktuellaOrdrar = new javax.swing.JButton();
+        btnTillbaka = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -58,6 +59,9 @@ public class OrderMeny extends javax.swing.JFrame {
         btnAktuellaOrdrar.setText("Aktuella ordrar");
         btnAktuellaOrdrar.addActionListener(this::btnAktuellaOrdrarActionPerformed);
 
+        btnTillbaka.setText("Tillbaka..");
+        btnTillbaka.addActionListener(this::btnTillbakaActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -67,16 +71,23 @@ public class OrderMeny extends javax.swing.JFrame {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 77, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(171, 171, 171))
             .addGroup(layout.createSequentialGroup()
-                .addGap(34, 34, 34)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnOrderHistorik, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnSkapaKundorder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(44, 44, 44)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnAktuellaOrdrar)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(btnSkapaFraktsedel, javax.swing.GroupLayout.DEFAULT_SIZE, 134, Short.MAX_VALUE)
-                        .addComponent(btnOrderStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(34, 34, 34)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnOrderHistorik, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(btnSkapaKundorder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(44, 44, 44)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnSkapaFraktsedel, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnOrderStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addComponent(btnTillbaka)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(131, 131, 131)
+                .addComponent(btnAktuellaOrdrar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -92,9 +103,11 @@ public class OrderMeny extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnOrderHistorik)
                     .addComponent(btnOrderStatus))
-                .addGap(34, 34, 34)
+                .addGap(39, 39, 39)
                 .addComponent(btnAktuellaOrdrar)
-                .addContainerGap(59, Short.MAX_VALUE))
+                .addGap(13, 13, 13)
+                .addComponent(btnTillbaka)
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         pack();
@@ -109,11 +122,17 @@ public class OrderMeny extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOrderHistorikActionPerformed
 
     private void btnSkapaKundorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkapaKundorderActionPerformed
-       new SkapaKundorder().setVisible(true);
+        try {
+            new SkapaKundorder(idb).setVisible(true);
+        } catch(InfException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        
     }//GEN-LAST:event_btnSkapaKundorderActionPerformed
 
     private void btnSkapaFraktsedelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkapaFraktsedelActionPerformed
-String idStr = javax.swing.JOptionPane.showInputDialog("Ange Order-ID:");
+//motorn för att skapafraktsedel
+        String idStr = javax.swing.JOptionPane.showInputDialog("Ange Order-ID:");
     if (idStr != null && !idStr.isEmpty()) {
         try {
             String sql = "SELECT Kunder.Namn, Kunder.Adress, Hattmodeller.PrisExklMoms " +
@@ -126,7 +145,6 @@ String idStr = javax.swing.JOptionPane.showInputDialog("Ange Order-ID:");
             java.util.HashMap<String, String> data = idb.fetchRow(sql);
 
             if (data != null) {
-                // Anropa motorn vi skapade i Steg 2
                 skapaFraktsedelFil(Integer.parseInt(idStr), data.get("Namn"), data.get("Adress"), data.get("PrisExklMoms"));
             } else {
                 javax.swing.JOptionPane.showMessageDialog(this, "Kunde inte hitta ordern i databasen.");
@@ -150,29 +168,34 @@ String idStr = javax.swing.JOptionPane.showInputDialog("Ange Order-ID:");
     new AktuellaOrdrar(idb).setVisible(true);
     
     }//GEN-LAST:event_btnAktuellaOrdrarActionPerformed
+
+    private void btnTillbakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTillbakaActionPerformed
+this.dispose();
+    }//GEN-LAST:event_btnTillbakaActionPerformed
 private void skapaFraktsedelFil(int orderID, String namn, String adress, String prisExkl) {
     String filnamn = "Fraktsedel_Order_" + orderID + ".txt";
-    // Skapar ett objekt för att slumpa tal
-java.util.Random rand = new java.util.Random();
+//metod för slumpmässig fraktkod
+    java.util.Random rand = new java.util.Random();
 
-// Genererar ett tal mellan 10 000 000 och 99 999 999
-int slumpNummer = 10000000 + rand.nextInt(90000000); 
+    int slumpNummer = 10000000 + rand.nextInt(90000000); 
 
-// Gör om talet till en textsträng (String) för fraktsedeln
-String exportKod = String.valueOf(slumpNummer);
+    String exportKod = String.valueOf(slumpNummer);
     
     
     try (java.io.PrintWriter writer = new java.io.PrintWriter(filnamn, "UTF-8")) {
         double pris = Double.parseDouble(prisExkl);
         double moms = pris * 0.25;
         double totalt = pris + moms;
-
-       boolean arExport = !(adress.toLowerCase().contains("sverige") || adress.toLowerCase().contains("sweden"));
-       if (arExport) {
-            writer.println("======= FRAKTSEDEL (EXPORT) =======");
+//tydliggör om ordern är inrikes eller utrikes
+//writerprinln metoden skapar fraktsedeln som en txt fil som sparas lokalt
+     // Om adressen innehåller "London" eller "UK" så sätter vi export till true
+boolean arExport = adress.toLowerCase().contains("london");
+        
+          if (arExport) {
+    writer.println("======= FRAKTSEDEL (EXPORT) =======");
         } else {
-            writer.println("======= FRAKTSEDEL (INRIKES) =======");
-        }
+    writer.println("======= FRAKTSEDEL (INRIKES) =======");
+                      }
         writer.println("Ordernummer: " + orderID);
         writer.println("Mottagare:   " + namn);
         writer.println("Adress:      " + adress);
@@ -222,6 +245,7 @@ String exportKod = String.valueOf(slumpNummer);
     private javax.swing.JButton btnOrderStatus;
     private javax.swing.JButton btnSkapaFraktsedel;
     private javax.swing.JButton btnSkapaKundorder;
+    private javax.swing.JButton btnTillbaka;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
