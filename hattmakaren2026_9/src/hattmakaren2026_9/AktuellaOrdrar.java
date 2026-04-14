@@ -9,6 +9,8 @@ import java.util.HashMap;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import java.util.ArrayList;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 
 /**
  *
@@ -27,6 +29,17 @@ public class AktuellaOrdrar extends javax.swing.JFrame {
         initComponents();
         
         fyllOrderTabell();
+        
+        jtAktuellaOrdrar.setDefaultEditor(Object.class, null);
+        
+        jtAktuellaOrdrar.addMouseListener(new java.awt.event.MouseAdapter() {
+        @Override
+        public void mouseClicked(java.awt.event.MouseEvent evt) {
+            if (evt.getClickCount() == 2) {
+                visaOrderInnehall();
+            }
+        }
+    });
     }
     
     private void fyllOrderTabell(){
@@ -69,7 +82,58 @@ jtAktuellaOrdrar.getColumnModel().getColumn(5).setPreferredWidth(300);
 jtAktuellaOrdrar.getColumnModel().getColumn(6).setPreferredWidth(150); 
     }
     
-    
+    private void visaOrderInnehall() {
+    int valdRad = jtAktuellaOrdrar.getSelectedRow();
+
+    if (valdRad == -1) {
+        return;
+    }
+
+    try {
+        // Hämta OrderID från första kolumnen i tabellen
+        String orderID = jtAktuellaOrdrar.getValueAt(valdRad, 0).toString();
+
+        String sql = "SELECT OrderradID, ModellID, Antal, Anpassningstext, RadPrisExklMoms "
+                   + "FROM Orderrader WHERE OrderID = " + orderID;
+
+        ArrayList<HashMap<String, String>> rader = idb.fetchRows(sql);
+
+        if (rader == null || rader.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                    "Den valda ordern innehåller inga orderrader.",
+                    "Orderinnehåll",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Skapa kolumner för popup-tabellen
+        String[] kolumner = {"OrderradID", "ModellID", "Antal", "Anpassningstext", "RadPrisExklMoms"};
+        DefaultTableModel model = new DefaultTableModel(kolumner, 0);
+
+        for (HashMap<String, String> rad : rader) {
+            model.addRow(new Object[]{
+                rad.get("OrderradID"),
+                rad.get("ModellID"),
+                rad.get("Antal"),
+                rad.get("Anpassningstext"),
+                rad.get("RadPrisExklMoms")
+            });
+        }
+
+        JTable innehallsTabell = new JTable(model);
+        JScrollPane scrollPane = new JScrollPane(innehallsTabell);
+        scrollPane.setPreferredSize(new java.awt.Dimension(700, 200));
+
+        JOptionPane.showMessageDialog(this,
+                scrollPane,
+                "Innehåll i order " + orderID,
+                JOptionPane.INFORMATION_MESSAGE);
+
+    } catch (InfException ex) {
+        JOptionPane.showMessageDialog(this,
+                "Fel vid hämtning av orderinnehåll: " + ex.getMessage());
+    }
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
