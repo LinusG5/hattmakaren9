@@ -122,7 +122,12 @@ public class OrderMeny extends javax.swing.JFrame {
     }//GEN-LAST:event_btnOrderHistorikActionPerformed
 
     private void btnSkapaKundorderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkapaKundorderActionPerformed
-       new SkapaKundorder().setVisible(true);
+        try {
+            new SkapaKundorder(idb).setVisible(true);
+        } catch(InfException e) {
+            System.out.println("Error: " + e.getMessage());
+        }
+        
     }//GEN-LAST:event_btnSkapaKundorderActionPerformed
 
     private void btnSkapaFraktsedelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSkapaFraktsedelActionPerformed
