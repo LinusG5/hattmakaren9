@@ -83,6 +83,7 @@ jtAktuellaOrdrar.getColumnModel().getColumn(6).setPreferredWidth(150);
         jScrollPane2 = new javax.swing.JScrollPane();
         jtAktuellaOrdrar = new javax.swing.JTable();
         btnTillbaka = new javax.swing.JButton();
+        btnRedigeraOrder = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -102,6 +103,9 @@ jtAktuellaOrdrar.getColumnModel().getColumn(6).setPreferredWidth(150);
         btnTillbaka.setText("Tillbaka");
         btnTillbaka.addActionListener(this::btnTillbakaActionPerformed);
 
+        btnRedigeraOrder.setText("Redigera Order");
+        btnRedigeraOrder.addActionListener(this::btnRedigeraOrderActionPerformed);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -113,13 +117,17 @@ jtAktuellaOrdrar.getColumnModel().getColumn(6).setPreferredWidth(150);
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(btnTillbaka)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnRedigeraOrder)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(btnTillbaka)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnTillbaka)
+                    .addComponent(btnRedigeraOrder))
                 .addGap(34, 34, 34)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -131,6 +139,54 @@ jtAktuellaOrdrar.getColumnModel().getColumn(6).setPreferredWidth(150);
     private void btnTillbakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTillbakaActionPerformed
     this.dispose();        // TODO add your handling code here:
     }//GEN-LAST:event_btnTillbakaActionPerformed
+
+    private void btnRedigeraOrderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRedigeraOrderActionPerformed
+
+    int radIndex = jtAktuellaOrdrar.getSelectedRow();
+    
+    if (radIndex == -1) {
+        JOptionPane.showMessageDialog(this, "Vänligen välj en order i tabellen först!");
+        return;
+    }
+
+    try {
+        // Hämta nuvarande värden från tabellen
+        String orderID = String.valueOf(jtAktuellaOrdrar.getValueAt(radIndex, 0));
+        String nuvarandeDatum = String.valueOf(jtAktuellaOrdrar.getValueAt(radIndex, 2));
+        String nuvarandeStatus = String.valueOf(jtAktuellaOrdrar.getValueAt(radIndex, 3));
+        String nuvarandeSnabb = String.valueOf(jtAktuellaOrdrar.getValueAt(radIndex, 4));
+        String nuvarandeAdress = String.valueOf(jtAktuellaOrdrar.getValueAt(radIndex, 5));
+        String nuvarandePris = String.valueOf(jtAktuellaOrdrar.getValueAt(radIndex, 6));
+
+        // Öppna rutor för varje fält
+        String nyAdress = JOptionPane.showInputDialog(this, "Ändra adress:", nuvarandeAdress);
+        String nyStatus = JOptionPane.showInputDialog(this, "Ändra status:", nuvarandeStatus);
+        String nyttDatum = JOptionPane.showInputDialog(this, "Ändra datum (YYYY-MM-DD HH:MM:SS):", nuvarandeDatum);
+        String nySnabb = JOptionPane.showInputDialog(this, "Ändra Snabborder (1 eller 0):", nuvarandeSnabb);
+        String nyttPris = JOptionPane.showInputDialog(this, "Ändra totalpris:", nuvarandePris); {
+            
+            // SQL Fråga
+            String sql = "UPDATE Ordrar SET "
+                       + "FraktAdress = '" + nyAdress + "', "
+                       + "Status = '" + nyStatus + "', "
+                       + "OrderDatum = '" + nyttDatum + "', "
+                       + "ArSnabborder = " + nySnabb + ", "
+                       + "TotalPrisInclMoms = " + nyttPris + " "
+                       + "WHERE OrderID = " + orderID;
+            
+            
+            idb.update(sql);
+            
+            // Uppdatera tabellen och bekräfta för användaren
+            fyllOrderTabell(); 
+            JOptionPane.showMessageDialog(this, "Order " + orderID + " har uppdaterats!");
+        }
+    } catch (InfException ex) {
+        JOptionPane.showMessageDialog(this, "Databastillgång misslyckades: " + ex.getMessage());
+    } catch (Exception ex) {
+        JOptionPane.showMessageDialog(this, "Ett fel uppstod: " + ex.getMessage());
+    }
+    }//GEN-LAST:event_btnRedigeraOrderActionPerformed
 
     /**
      * @param args the command line arguments
@@ -158,8 +214,8 @@ jtAktuellaOrdrar.getColumnModel().getColumn(6).setPreferredWidth(150);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnRedigeraOrder;
     private javax.swing.JButton btnTillbaka;
-    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jtAktuellaOrdrar;
     // End of variables declaration//GEN-END:variables
