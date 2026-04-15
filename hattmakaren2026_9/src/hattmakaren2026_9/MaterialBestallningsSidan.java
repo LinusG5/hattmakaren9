@@ -37,6 +37,7 @@ public class MaterialBestallningsSidan extends javax.swing.JFrame {
        laddaHelaTabellen();
        initMaterialListaTabell();
        laddaMaterialLista();
+       
 
     }
 

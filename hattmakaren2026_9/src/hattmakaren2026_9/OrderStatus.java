@@ -25,6 +25,7 @@ public class OrderStatus extends javax.swing.JFrame {
         initComponents();
         this.idb = idb;
         fyllRullListaMedKunder();
+        
     }
 
     private void fyllRullListaMedKunder() {

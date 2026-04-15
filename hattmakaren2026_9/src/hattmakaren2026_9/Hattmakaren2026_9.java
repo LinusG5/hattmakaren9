@@ -23,6 +23,7 @@ public class Hattmakaren2026_9 {
     
     private static InfDB idb;
     
+    
     public static void main(String[] args) {
         // TODO code application logic here
      

@@ -182,6 +182,7 @@ private void skapaFraktsedelFil(int orderID, String namn, String adress, String 
     String exportKod = String.valueOf(slumpNummer);
     
     
+    
     try (java.io.PrintWriter writer = new java.io.PrintWriter(filnamn, "UTF-8")) {
         double pris = Double.parseDouble(prisExkl);
         double moms = pris * 0.25;

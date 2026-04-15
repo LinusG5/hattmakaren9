@@ -29,6 +29,7 @@ public class Kundsida extends javax.swing.JFrame {
         initComponents();
         this.idb = idb;
         visaAllaKunder(); 
+        
 }
     
     public void visaAllaKunder() {

@@ -124,6 +124,7 @@ public class HuvudMeny extends javax.swing.JFrame {
     private void BTNkundSidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BTNkundSidaActionPerformed
     Kundsida ks = new Kundsida(idb);
     ks.setVisible(true);
+    
     }//GEN-LAST:event_BTNkundSidaActionPerformed
 
     

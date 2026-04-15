@@ -26,6 +26,7 @@ public class RegistreraKunder extends javax.swing.JFrame {
      */
     public RegistreraKunder(InfDB idb) {
         this.idb = idb;
+        
   
         initComponents();
         fyllTabell();

@@ -28,6 +28,7 @@ public class LagerfordaModeller extends javax.swing.JFrame {
         initComponents();
         
         
+        
         fyllTabell();
     }
     

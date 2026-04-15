@@ -24,6 +24,7 @@ public class SkapaKundorder extends javax.swing.JFrame {
 
     public SkapaKundorder(InfDB idb) throws InfException {
         initComponents();
+        
         this.idb = idb;
         fyllRulllistaMedKunder();
     }
