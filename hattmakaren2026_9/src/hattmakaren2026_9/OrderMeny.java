@@ -170,7 +170,7 @@ public class OrderMeny extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAktuellaOrdrarActionPerformed
 
     private void btnTillbakaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTillbakaActionPerformed
-this.dispose();
+        this.dispose();
     }//GEN-LAST:event_btnTillbakaActionPerformed
 private void skapaFraktsedelFil(int orderID, String namn, String adress, String prisExkl) {
     String filnamn = "Fraktsedel_Order_" + orderID + ".txt";

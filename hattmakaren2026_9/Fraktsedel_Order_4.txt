@@ -1,9 +1,8 @@
-======= FRAKTSEDEL (EXPORT) =======
+======= FRAKTSEDEL (INRIKES) =======
 Ordernummer: 4
 Mottagare:   Kurt Lupton
 Adress:      Slottsgatan 1, Örebro
 -----------------------------------
-Exportkod:   12034112
 Vikt:        0.8 kg
 Moms (25%):  187.5 kr
 Totalpris:   937.5 kr
